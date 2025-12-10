@@ -1,18 +1,40 @@
 using UnityEngine;
 
-public class Room : MonoBehaviour
+[System.Serializable]
+public enum TypeSalle
 {
-    Vector2 Index;
-    Vector2 CoordonerInScene;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    Vide,
+    Combat,
+    Item,
+    Boss
+}
+
+public class Room
+{
+    public Vector2 IndexInMap;
+    public Vector2 CoordonerInScene;
+
+    bool active;
+    TypeSalle type;
+
+    public bool VoisinHaut;
+    public bool VoisinBas;
+    public bool VoisinGauche;
+    public bool VoisinDroite;
+
+    public Room(bool active, TypeSalle typeSalle, Vector2 IMap)
     {
-        
+        this.active = active;
+        this.type = typeSalle;
+        this.IndexInMap = IMap;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public void SetActive(bool value) => active = value;
+    public bool IsActive() => active;
+
+    public void SetSalleType(TypeSalle t) => type = t;
+    public TypeSalle GetSalleType() => type;
+
+    public void SetCoordonerInScene(Vector2 co) => CoordonerInScene = co;
+    public Vector2 GetCoordonerInScene() => CoordonerInScene;
 }
