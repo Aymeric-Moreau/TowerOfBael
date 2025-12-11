@@ -2,10 +2,26 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
+[Serializable]
+public struct GORoom
+{
+    TypeSalle type;
+    GameObject prefab;
+}
 
 public class GenerationProceduralManager : MonoBehaviour
 {
     public Room[,] map = new Room[9, 9];
+    
+    public TypeSalle[] typeSalleParIndex;
+    public GameObject[] prefabSalle;
+
+
+
+
+
+
 
     void Start()
     {
@@ -14,12 +30,12 @@ public class GenerationProceduralManager : MonoBehaviour
         Vector2 SpawnCo = new Vector2(4,4);
         // Centre
         map[(int)SpawnCo.x, (int)SpawnCo.y].SetActive(true);
-        map[(int)SpawnCo.x, (int)SpawnCo.y].SetSalleType(TypeSalle.Vide);
+        map[(int)SpawnCo.x, (int)SpawnCo.y].SetSalleType(TypeSalle.Spawn);
 
         
 
         // Choix boss
-        Vector2 BossCo = GetRandomCoInListRange(new List<List<Vector2>>
+        Room BossRoom = GetRandomRoomInListRange(new List<List<Vector2>>
         {
             GetAllCoBetweenMinMaxCo(new Vector2(0, 0), new Vector2(1, 7)),
             GetAllCoBetweenMinMaxCo(new Vector2(2, 0), new Vector2(6, 1)),
@@ -27,12 +43,15 @@ public class GenerationProceduralManager : MonoBehaviour
             GetAllCoBetweenMinMaxCo(new Vector2(2, 7), new Vector2(6, 8))
         });
 
-        map[(int)BossCo.x, (int)BossCo.y].SetActive(true);
-        map[(int)BossCo.x, (int)BossCo.y].SetSalleType(TypeSalle.Boss);
+        Vector2 BossCo = BossRoom.IndexInMap;
+
+        BossRoom.SetActive(true);
+        BossRoom.SetSalleType(TypeSalle.Boss);
 
         List<Vector2> pathCo = GetCoPathBetweenTwoCoo(SpawnCo, BossCo);
         SetRoomInAllCoList(pathCo);
 
+        
 
         // Debug map
         for (int i = 0; i < 9; i++)
@@ -50,11 +69,36 @@ public class GenerationProceduralManager : MonoBehaviour
             );
         }
 
-        //Debug.Log("co Spawn = " + SpawnCo + " co Boss = " + BossCo);
-        foreach (var item in pathCo)
+        // GetEmptyCoordinatesWithOneNeighbor()
+        Debug.Log(" nombre de case possible pour item = " + GetEmptyRoomWithOneNeighbor().Count);
+        Room itemRoom = GetRandomRoomInListRange(GetEmptyRoomWithOneNeighbor());
+
+        itemRoom.SetActive(true);
+        itemRoom.SetSalleType(TypeSalle.Item);
+
+
+        for (int i = 0; i < 9; i++)
         {
-            Debug.Log(item);
+            Debug.Log(
+                "( " + i + ",0 ):" + Format(i, 0) + " . " +
+                "( " + i + ",1 ):" + Format(i, 1) + " . " +
+                "( " + i + ",2 ):" + Format(i, 2) + " . " +
+                "( " + i + ",3 ):" + Format(i, 3) + " . " +
+                "( " + i + ",4 ):" + Format(i, 4) + " . " +
+                "( " + i + ",5 ):" + Format(i, 5) + " . " +
+                "( " + i + ",6 ):" + Format(i, 6) + " . " +
+                "( " + i + ",7 ):" + Format(i, 7) + " . " +
+                "( " + i + ",8 ):" + Format(i, 8)
+            );
         }
+
+        SpawnAllRoomInScene();
+
+        //Debug.Log("co Spawn = " + SpawnCo + " co Boss = " + BossCo);
+        //foreach (var item in pathCo)
+        //{
+        //    Debug.Log(item);
+        //}
     }
 
     string Format(int x, int y)
@@ -153,17 +197,37 @@ public class GenerationProceduralManager : MonoBehaviour
         List<Vector2> fusion = new List<Vector2>();
 
         foreach (var subList in listeCo)
-            fusion.AddRange(subList);
+        { fusion.AddRange(subList); }
+            
 
         return fusion[UnityEngine.Random.Range(0, fusion.Count)];
-    } 
+    }
+
+    // renvoie une room aléatoire a partir d'une liste de liste de co 
+    Room GetRandomRoomInListRange(List<List<Vector2>> listeCo)
+    {
+        List<Vector2> fusion = new List<Vector2>();
+
+        foreach (var subList in listeCo)
+        { fusion.AddRange(subList); }
+
+        Vector2 coAleatoire = fusion[UnityEngine.Random.Range(0, fusion.Count)];
+        return map[(int)coAleatoire.x , (int)coAleatoire.y];
+    }
+
+    // renvoie une co aléatoire a partir d'une liste
+    Room GetRandomRoomInListRange(List<Room> listeRoom)
+    {
+       
+        return listeRoom[UnityEngine.Random.Range(0, listeRoom.Count)];
+    }
 
     // co min = 4,4 coMax = 8,5
     // 8,5 - 4,4 = 4,1
     // 4 +4 = 8
     // 4+1 = 5
     // on récupére les case entre 4,4 et 8,4 ensuite entre 8,4 et 8,5
-   List<Vector2> GetCoPathBetweenTwoCoo(Vector2 coMin, Vector2 coMax)
+    List<Vector2> GetCoPathBetweenTwoCoo(Vector2 coMin, Vector2 coMax)
     {
         List<Vector2> result = new List<Vector2>();
         float ecartX = coMax.x - coMin.x;
@@ -195,6 +259,85 @@ public class GenerationProceduralManager : MonoBehaviour
                 map[(int)item.x, (int)item.y].SetSalleType(TypeSalle.Combat);
             }
             
+        }
+    }
+
+    List<Room> GetAllActivedRoom()
+    {
+        List < Room > result = new List<Room>();
+        foreach (var item in map)
+        {
+            if (item.IsActive())
+            {
+                result.Add(item);
+            }
+        }
+
+        return result;
+    }
+
+    List<Room> GetEmptyRoomWithOneNeighbor()
+    {
+        List<Room> allRooms = GetAllActivedRoom();
+        List<Room> allNeighbor = new List<Room>();
+        List<Room> result = new List<Room>();
+        Room[] NeighborsOfNeighbors = new Room[8];
+        int nbrVoisinActive = 0;
+
+        // on parcours toutes les salle en verifiant si c'est des salle de combat
+        foreach (var room in allRooms) {
+            if (room.GetSalleType() == TypeSalle.Combat || room.GetSalleType() == TypeSalle.Spawn)
+            {
+                NeighborsOfNeighbors = GetAllVoisins(room.IndexInMap);
+                Debug.Log(" NeighborsOfNeighbors = " + NeighborsOfNeighbors.Length + ", " + room.IndexInMap);
+                foreach (var item in NeighborsOfNeighbors)
+                {
+                    if (item != null && !item.IsActive() && item.GetSalleType() != TypeSalle.Boss)
+                    {
+                        allNeighbor.Add(item);
+                    }
+                }
+            }
+        }
+
+        Debug.Log(" allNeighbor = " + allNeighbor.Count);
+        foreach (var room in allNeighbor)
+        { Debug.Log(" all index in allNeighbor :  " + room.IndexInMap); }
+
+            foreach (var room in allNeighbor) {
+            nbrVoisinActive = 0;
+            Debug.Log(" GetAllCloseVoisins(room.IndexInMap).Length = " + GetAllCloseVoisins(room.IndexInMap).Length + " , " + room.IndexInMap);
+
+            foreach (var item in GetAllCloseVoisins(room.IndexInMap))
+            {
+                if (item != null && item.IsActive())
+                {
+                    nbrVoisinActive++;
+                }
+            }
+            Debug.Log(" nbrVoisinActive = " + nbrVoisinActive);
+            if (nbrVoisinActive == 1)
+            {
+                result.Add(room);
+            }
+        }
+        Debug.Log(" result = " + result.Count);
+        return result;
+    }
+
+    void SpawnRoom(Vector2 index, TypeSalle type)
+    {
+        Instantiate(prefabSalle[Array.IndexOf(typeSalleParIndex, type)],
+            new Vector3(index.x * 5, index.y * 4, 0),
+            Quaternion.identity);
+    }
+
+    void SpawnAllRoomInScene()
+    {
+        
+        foreach (var item in GetAllActivedRoom())
+        {
+            SpawnRoom(item.IndexInMap,item.GetSalleType());
         }
     }
 

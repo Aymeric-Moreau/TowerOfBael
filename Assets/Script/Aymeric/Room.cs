@@ -6,7 +6,9 @@ public enum TypeSalle
     Vide,
     Combat,
     Item,
-    Boss
+    Boss,
+    Spawn
+
 }
 
 public class Room
