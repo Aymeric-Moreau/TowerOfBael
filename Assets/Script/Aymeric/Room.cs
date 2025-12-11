@@ -16,7 +16,7 @@ public class Room
 
     bool active;
     TypeSalle type;
-
+    public bool acceptePlusieurVoisin;
     public bool VoisinHaut;
     public bool VoisinBas;
     public bool VoisinGauche;

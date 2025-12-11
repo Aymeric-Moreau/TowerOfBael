@@ -50,7 +50,7 @@ public class GenerationProceduralManager : MonoBehaviour
             );
         }
 
-        Debug.Log("co Spawn = " + SpawnCo + " co Boss = " + BossCo);
+        //Debug.Log("co Spawn = " + SpawnCo + " co Boss = " + BossCo);
         foreach (var item in pathCo)
         {
             Debug.Log(item);
@@ -94,6 +94,22 @@ public class GenerationProceduralManager : MonoBehaviour
         return result;
     }
 
+    // Récupère les 4 voisins les plus proche autour d’une case (si hors limite → null)
+    Room[] GetAllCloseVoisins(Vector2 co)
+    {
+        Room[] result = new Room[4];
+
+        int cx = (int)co.x;
+        int cy = (int)co.y;
+
+        result[0] = GetRoom(cx - 1, cy);     // Gauche
+        result[1] = GetRoom(cx, cy + 1);     // Haut
+        result[2] = GetRoom(cx + 1, cy);     // Droite
+        result[3] = GetRoom(cx, cy - 1);     // Bas
+        
+        return result;
+    }
+
     // Retourne directement la Room si elle existe, sinon null
     Room GetRoom(int x, int y)
     {
@@ -119,7 +135,7 @@ public class GenerationProceduralManager : MonoBehaviour
         }
         if (coMin.y > coMax.y) { coMaxY = coMin.y; coMinY = coMax.y; }
 
-        Debug.Log("GetAllCoBetweenMinMaxCo = coMin = " + coMin + " coMax = " + coMax);
+        //Debug.Log("GetAllCoBetweenMinMaxCo = coMin = " + coMin + " coMax = " + coMax);
         // tant que co index x est plus petit qye comax.x 
         for (int XI = (int)coMinX; XI <= coMaxX; XI++)
         {
@@ -130,6 +146,7 @@ public class GenerationProceduralManager : MonoBehaviour
         }
         return result;
     }
+
     // renvoie une co aléatoire a partir d'une liste de liste de co 
     Vector2 GetRandomCoInListRange(List<List<Vector2>> listeCo)
     {
@@ -152,7 +169,7 @@ public class GenerationProceduralManager : MonoBehaviour
         float ecartX = coMax.x - coMin.x;
         float ecartY = coMax.y - coMin.y;
 
-        Debug.Log("comin = " + coMin +  ", comax = " + coMax + ", ecart = " + ecartX + "," + ecartY);
+        //Debug.Log("comin = " + coMin +  ", comax = " + coMax + ", ecart = " + ecartX + "," + ecartY);
 
         List<Vector2> lignevertical = GetAllCoBetweenMinMaxCo(coMin, new Vector2(coMin.x + ecartX , coMin.y));
         List<Vector2> ligneveHorizontal = GetAllCoBetweenMinMaxCo(new Vector2(coMin.x + ecartX, coMin.y), new Vector2(coMin.x + ecartX , coMin.y + ecartY));
