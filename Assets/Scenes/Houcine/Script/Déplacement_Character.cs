@@ -4,10 +4,18 @@ using UnityEngine;
 
 public class Déplacement_Character : MonoBehaviour
 {
+    //Variable Déplacement
     private float deplacementAxeVertical;
     private float deplacementAxeHorizontal;
     public float vitesseDeplacement = 10f;
     private Rigidbody2D rb;
+
+    //Variable Tir
+    public GameObject projectiles;
+    public float cooldown = 0.5f;
+    private Vector2 dir;
+    [SerializeField] float next_tir;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -48,15 +56,59 @@ public class Déplacement_Character : MonoBehaviour
 
         rb.angularVelocity = 0f;
 
+    }
+    public void Tir()
+    {
+         dir = Vector2.zero;
 
+        if (Input.GetKey(KeyCode.UpArrow)) 
+        {
+            dir += Vector2.up;
+           
+        }
+
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            dir += Vector2.down;
+        }
+
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            dir += Vector2.right;
+        }
+
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            dir += Vector2.left;
+        }
+
+        if (dir != Vector2.zero && Time.time >= next_tir)
+
+        {
+            Debug.Log("Direction du tir : " + dir);
+
+            // Instancie le projectile
+            GameObject tir = Instantiate(projectiles, transform.position, Quaternion.identity);
+
+            // Assigne la direction telle quelle 
+            tir.GetComponent<Tear_Character>().direction = dir;
+
+            // Reset cooldown
+            next_tir = Time.time + cooldown;
+        }
 
 
     }
+
+
+
     // Update is called once per frame
     void Update()
     {
         deplacementAxeVertical = Input.GetAxis("Vertical");
         deplacementAxeHorizontal = Input.GetAxis("Horizontal");
+
+        Tir();
 
     }
 
