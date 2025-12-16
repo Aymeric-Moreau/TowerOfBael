@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -23,6 +24,7 @@ public class Room
     public bool VoisinBas;
     public bool VoisinGauche;
     public bool VoisinDroite;
+    public Dictionary<Direction, Room> Voisins = new();
 
     public Room(bool active, TypeSalle typeSalle, Vector2 IMap)
     {
@@ -39,4 +41,20 @@ public class Room
 
     public void SetCoordonerInScene(Vector2 co) => CoordonerInScene = co;
     public Vector2 GetCoordonerInScene() => CoordonerInScene;
+
+    public bool HasNeighbor(Direction dir)
+    {
+        return Voisins.ContainsKey(dir);
+    }
+
+    public Room GetNeighbor(Direction dir)
+    {
+        Voisins.TryGetValue(dir, out Room neighbor);
+        return neighbor;
+    }
+
+    public void SetNeighbor(Direction dir, Room room)
+    {
+        Voisins[dir] = room;
+    }
 }

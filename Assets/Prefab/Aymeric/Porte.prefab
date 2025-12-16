@@ -144,6 +144,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be59631a22c8e754ba55810435460aa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  indexRoom: {x: 0, y: 0}
+  roomCible: {fileID: 0}
+  direction: 0
+  spawnPoint: {fileID: 5876079217015017375}
 --- !u!1 &4445087160612468962
 GameObject:
   m_ObjectHideFlags: 0

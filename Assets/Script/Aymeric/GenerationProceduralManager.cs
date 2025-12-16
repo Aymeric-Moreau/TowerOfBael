@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
+//using static UnityEditor.PlayerSettings;
 [Serializable]
 public struct GORoom
 {
@@ -13,6 +13,7 @@ public struct GORoom
 public class GenerationProceduralManager : MonoBehaviour
 {
     public Room[,] map = new Room[9, 9];
+    public Dictionary<Vector2,GameObject> DictInstanciateRooms = new Dictionary<Vector2,GameObject>();
     
     public TypeSalle[] typeSalleParIndex;
     public GameObject[] prefabSalle;
@@ -77,6 +78,7 @@ public class GenerationProceduralManager : MonoBehaviour
 
         itemRoom.SetActive(true);
         itemRoom.SetSalleType(TypeSalle.Item);
+        itemRoom.acceptePlusieurVoisin = false;
 
 
         for (int i = 0; i < 9; i++)
@@ -93,7 +95,7 @@ public class GenerationProceduralManager : MonoBehaviour
                 "( " + i + ",8 ):" + Format(i, 8)
             );
         }
-
+        SetAllValueOfAllRoom();
         SpawnAllRoomInScene();
 
         //Debug.Log("co Spawn = " + SpawnCo + " co Boss = " + BossCo);
@@ -140,7 +142,50 @@ public class GenerationProceduralManager : MonoBehaviour
         return result;
     }
 
+    Room getVoisin(Vector2 co, Direction dir)
+    {
+        Room result = null;
+
+        int cx = (int)co.x;
+        int cy = (int)co.y;
+
+
+        switch (dir)
+        {
+            case Direction.gauche:
+                // logique gauche
+                result = GetRoom(cx - 1, cy);     // Gauche
+                break;
+
+            case Direction.droite:
+                // logique droite
+                result = GetRoom(cx + 1, cy);     // Droite
+                break;
+
+            case Direction.haut:
+                // logique haut
+                result = GetRoom(cx, cy + 1);     // Haut
+                break;
+
+            case Direction.bas:
+                // logique bas
+                result = GetRoom(cx, cy - 1);     // Bas
+                break;
+
+            default:
+                Debug.LogWarning("Direction inconnue");
+                break;
+        }
+
+        return result;
+    }
+
     // Récupère les 4 voisins les plus proche autour d’une case (si hors limite → null)
+    /// <summary>
+    /// Récupére les 4 voisin dans cette ordre gauche, haut,droite,bas
+    /// </summary>
+    /// <param name="co">Coordoné de la room</param>
+    /// <returns>un array des voisin</returns>
     Room[] GetAllCloseVoisins(Vector2 co)
     {
         Room[] result = new Room[4];
@@ -152,7 +197,7 @@ public class GenerationProceduralManager : MonoBehaviour
         result[1] = GetRoom(cx, cy + 1);     // Haut
         result[2] = GetRoom(cx + 1, cy);     // Droite
         result[3] = GetRoom(cx, cy - 1);     // Bas
-        
+
         return result;
     }
 
@@ -327,15 +372,18 @@ public class GenerationProceduralManager : MonoBehaviour
         return result;
     }
 
-    void SpawnRoom(Vector2 index, TypeSalle type)
+    void SpawnRoom(Vector2 index, Room salle ,TypeSalle type)
     {
         GameObject room = prefabSalle[Array.IndexOf(typeSalleParIndex, type)];
+        
+
         Vector3 posRoom = new Vector3(index.x * room.transform.localScale.x * 1.4f, index.y * room.transform.localScale.y * 1.5f, 0);
-        Instantiate(room, posRoom,Quaternion.identity);
+        GameObject roomIntstance = Instantiate(room, posRoom,Quaternion.identity);
+        DictInstanciateRooms.Add(index, roomIntstance);
         //Instantiate(prefabSalle[Array.IndexOf(typeSalleParIndex, type)],
         //    new Vector3(index.x * ecartEntreSallX, index.y * ecartEntreSallY, 0),
         //    Quaternion.identity);
-        
+
     }
 
     void SpawnAllRoomInScene()
@@ -343,7 +391,36 @@ public class GenerationProceduralManager : MonoBehaviour
         
         foreach (var item in GetAllActivedRoom())
         {
-            SpawnRoom(item.IndexInMap,item.GetSalleType());
+            SpawnRoom(item.IndexInMap,item,item.GetSalleType());
+        }
+        SetAllValueOfAllPrefabRoom();
+    }
+
+    void SetAllValueOfAllRoom()
+    {
+       List<Room> lesRooms = GetAllActivedRoom();
+        foreach (var item in lesRooms)
+        {
+            foreach (Direction i in Enum.GetValues(typeof(Direction)))
+            {
+                item.SetNeighbor(i, getVoisin(item.IndexInMap, i));
+            }
+        }
+    }
+
+    void SetAllValueOfAllPrefabRoom()
+    {
+        foreach (var item in DictInstanciateRooms)
+        {
+            Door[] lesPorte = item.Value.GetComponentsInChildren<Door>();
+            foreach (var porte in lesPorte)
+            {
+                if (DictInstanciateRooms.TryGetValue(getVoisin(item.Key, porte.direction).IndexInMap, out GameObject cible)) // ages.TryGetValue("Alice", out int age)
+                {
+                    porte.roomCible = cible;// getVoisin(item.key, porte.direction).IndexInMap
+                }
+                    
+            }
         }
     }
 

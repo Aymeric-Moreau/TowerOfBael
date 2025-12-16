@@ -12,7 +12,9 @@ public enum Direction
 public class Door : MonoBehaviour
 {
     public Vector2 indexRoom;
+    public GameObject roomCible;
     public Direction direction;
+    public Transform spawnPoint;
 
     public static readonly Dictionary<Direction, Direction> directionCible = new Dictionary<Direction, Direction>{
     { Direction.droite, Direction.gauche },
@@ -37,7 +39,9 @@ public class Door : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            
+            Debug.Log("player in porte");
+            //collision.transform.position;
+            //collision.transform.position;
         }
     }
 }
