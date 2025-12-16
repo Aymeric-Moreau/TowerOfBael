@@ -16,6 +16,8 @@ public class GenerationProceduralManager : MonoBehaviour
     
     public TypeSalle[] typeSalleParIndex;
     public GameObject[] prefabSalle;
+    public float ecartEntreSallX = 50;
+    public float ecartEntreSallY = 40;
 
 
 
@@ -327,9 +329,13 @@ public class GenerationProceduralManager : MonoBehaviour
 
     void SpawnRoom(Vector2 index, TypeSalle type)
     {
-        Instantiate(prefabSalle[Array.IndexOf(typeSalleParIndex, type)],
-            new Vector3(index.x * 5, index.y * 4, 0),
-            Quaternion.identity);
+        GameObject room = prefabSalle[Array.IndexOf(typeSalleParIndex, type)];
+        Vector3 posRoom = new Vector3(index.x * room.transform.localScale.x * 1.4f, index.y * room.transform.localScale.y * 1.5f, 0);
+        Instantiate(room, posRoom,Quaternion.identity);
+        //Instantiate(prefabSalle[Array.IndexOf(typeSalleParIndex, type)],
+        //    new Vector3(index.x * ecartEntreSallX, index.y * ecartEntreSallY, 0),
+        //    Quaternion.identity);
+        
     }
 
     void SpawnAllRoomInScene()
