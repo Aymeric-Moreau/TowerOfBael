@@ -8,13 +8,27 @@ public enum TypeSalle
     Combat,
     Item,
     Boss,
-    Spawn
+    Spawn,
+    Bloquer
 
+}
+
+[System.Serializable]
+public struct IndexGrid
+{
+    public int x;
+   public int y;
+
+    public IndexGrid(int v1, int v2) : this()
+    {
+        x = v1;
+        y = v2;
+    }
 }
 
 public class Room
 {
-    public Vector2 IndexInMap;
+    public IndexGrid IndexInMap;
     public Vector2 CoordonerInScene;
 
     bool active;
@@ -26,7 +40,7 @@ public class Room
     public bool VoisinDroite;
     public Dictionary<Direction, Room> Voisins = new();
 
-    public Room(bool active, TypeSalle typeSalle, Vector2 IMap)
+    public Room(bool active, TypeSalle typeSalle, IndexGrid IMap)
     {
         this.active = active;
         this.type = typeSalle;

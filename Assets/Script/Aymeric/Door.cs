@@ -40,6 +40,11 @@ public class Door : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             Debug.Log("player in porte");
+            RoomManager RMScript = roomCible.GetComponent<RoomManager>();
+            directionCible.TryGetValue(direction, out Direction dirCible);
+            
+            Camera.main.transform.position = roomCible.transform.position + new Vector3(0,0,-20);
+            collision.gameObject.transform.position = RMScript.GetDoor(dirCible).spawnPoint.position;
             //collision.transform.position;
             //collision.transform.position;
         }

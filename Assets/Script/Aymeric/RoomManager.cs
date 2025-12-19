@@ -5,15 +5,17 @@ public class RoomManager : MonoBehaviour
 {
     Vector2 Index;
     Vector2 CoordonerInScene;
-    public Dictionary<Direction, Door> lesPortes;
+    public Door[] portes;
+    //public Dictionary<Direction, Door> lesPortes;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        Door[] scriptsDoors = GetComponentsInChildren<Door>();
-        foreach (var item in scriptsDoors)
-        {
-            lesPortes.Add(item.direction, item);
-        }
+        //Door[] scriptsDoors = GetComponentsInChildren<Door>();
+        //foreach (var item in scriptsDoors)
+        //{
+        //    lesPortes.Add(item.direction, item);
+        //    Debug.Log(item.name);
+        //}
     }
 
     // Update is called once per frame
@@ -24,7 +26,17 @@ public class RoomManager : MonoBehaviour
 
     public Door GetDoor(Direction dir)
     {
-        lesPortes.TryGetValue(dir, out Door door);
+        Door door = null;
+        foreach (var item in portes)
+        {
+            if (item.direction == dir)
+            {
+                door = item;
+                break;
+            }
+        }
+
         return door;
+
     }
 }

@@ -1,60 +1,89 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 //using static UnityEditor.PlayerSettings;
 [Serializable]
-public struct GORoom
+public struct IndexMinMax
 {
-    TypeSalle type;
-    GameObject prefab;
+    public int minX;
+    public int minY;
+    public int maxX;
+    public int maxY;
 }
 
 public class GenerationProceduralManager : MonoBehaviour
 {
-    public Room[,] map = new Room[9, 9];
-    public Dictionary<Vector2,GameObject> DictInstanciateRooms = new Dictionary<Vector2,GameObject>();
+    
+    public Room[,] map = new Room[9,9];
+    public Dictionary<IndexGrid, GameObject> DictInstanciateRooms = new Dictionary<IndexGrid, GameObject>();
+    public GameObject[] obstacles;
     
     public TypeSalle[] typeSalleParIndex;
     public GameObject[] prefabSalle;
     public float ecartEntreSallX = 50;
     public float ecartEntreSallY = 40;
+    public int seed = 0;
+    public int nbrSalleEnPlus = 0;
+    public IndexMinMax[] zoneSalleBoss;
 
-
-
-
-
+    IndexGrid SpawnCo;
+    IndexGrid BossCo;
 
 
     void Start()
     {
+        initialization();
+        placingSpecialRoom();
+        placingPathwayRoom();
+        instanciationRoomInScene();
+
+    }
+
+    void initialization()
+    {
         InitializeMapDefault();
-
-        Vector2 SpawnCo = new Vector2(4,4);
-        // Centre
-        map[(int)SpawnCo.x, (int)SpawnCo.y].SetActive(true);
-        map[(int)SpawnCo.x, (int)SpawnCo.y].SetSalleType(TypeSalle.Spawn);
-
-        
-
-        // Choix boss
-        Room BossRoom = GetRandomRoomInListRange(new List<List<Vector2>>
+        //UnityEngine.Random.state = new UnityEngine.Random.State();
+        if (seed !=0)
         {
-            GetAllCoBetweenMinMaxCo(new Vector2(0, 0), new Vector2(1, 7)),
-            GetAllCoBetweenMinMaxCo(new Vector2(2, 0), new Vector2(6, 1)),
-            GetAllCoBetweenMinMaxCo(new Vector2(7, 0), new Vector2(8, 8)),
-            GetAllCoBetweenMinMaxCo(new Vector2(2, 7), new Vector2(6, 8))
-        });
+            UnityEngine.Random.InitState(seed);
+        }
+        
+    }
 
-        Vector2 BossCo = BossRoom.IndexInMap;
+    void placingSpecialRoom()
+    {
+        SpawnCo = new IndexGrid(4, 4);
+        // Centre
+        map[SpawnCo.x, SpawnCo.y].SetActive(true);
+        map[SpawnCo.x, SpawnCo.y].SetSalleType(TypeSalle.Spawn);
+
+        List<List<IndexGrid>> bossZoneListe = new List<List<IndexGrid>>();
+        foreach (var item in zoneSalleBoss)
+        {
+            bossZoneListe.Add(GetAllCoBetweenMinMaxCo(new IndexGrid(item.minX, item.minY), new IndexGrid(item.maxX, item.maxY)));
+        }
+
+        List<IndexGrid> listeCo = FusionneListe(bossZoneListe);
+        // Choix boss
+        Room BossRoom = GetRandomRoomInListRange(listeCo);
+      
+
+        BossCo = BossRoom.IndexInMap;
 
         BossRoom.SetActive(true);
         BossRoom.SetSalleType(TypeSalle.Boss);
+    }
 
-        List<Vector2> pathCo = GetCoPathBetweenTwoCoo(SpawnCo, BossCo);
+    void placingPathwayRoom()
+    {
+        List<IndexGrid> pathCo = GetCoPathBetweenTwoCoo(SpawnCo, BossCo);
         SetRoomInAllCoList(pathCo);
 
-        
+
 
         // Debug map
         for (int i = 0; i < 9; i++)
@@ -73,14 +102,39 @@ public class GenerationProceduralManager : MonoBehaviour
         }
 
         // GetEmptyCoordinatesWithOneNeighbor()
-        Debug.Log(" nombre de case possible pour item = " + GetEmptyRoomWithOneNeighbor().Count);
+        //Debug.Log(" nombre de case possible pour item = " + GetEmptyRoomWithOneNeighbor().Count);
         Room itemRoom = GetRandomRoomInListRange(GetEmptyRoomWithOneNeighbor());
 
         itemRoom.SetActive(true);
         itemRoom.SetSalleType(TypeSalle.Item);
         itemRoom.acceptePlusieurVoisin = false;
+        SetRoomInAllCoList(GetAllCloseVoisinsCo(itemRoom.IndexInMap),TypeSalle.Bloquer);
 
 
+
+        // ajout de salle combat a des position aléatoire tout en étant a coté d'une salle déja existante
+        List<Room> neighbors = GetEmptyRoomWithNeighbor(TypeSalle.Combat, TypeSalle.Spawn);
+        int nbrSallecreer = 0;
+        while (nbrSallecreer != nbrSalleEnPlus)
+        {
+            Room combatRoom = GetRandomRoomInListRange(neighbors);
+            if (!combatRoom.IsActive())
+            {
+                combatRoom.SetActive(true);
+                combatRoom.SetSalleType(TypeSalle.Combat);
+                nbrSallecreer++;
+            }
+
+            
+        }
+
+
+
+
+    }
+
+    void instanciationRoomInScene()
+    {
         for (int i = 0; i < 9; i++)
         {
             Debug.Log(
@@ -97,12 +151,7 @@ public class GenerationProceduralManager : MonoBehaviour
         }
         SetAllValueOfAllRoom();
         SpawnAllRoomInScene();
-
-        //Debug.Log("co Spawn = " + SpawnCo + " co Boss = " + BossCo);
-        //foreach (var item in pathCo)
-        //{
-        //    Debug.Log(item);
-        //}
+        SetAllValueOfAllPrefabRoom();
     }
 
     string Format(int x, int y)
@@ -117,18 +166,18 @@ public class GenerationProceduralManager : MonoBehaviour
         {
             for (int y = 0; y < 9; y++)
             {
-                map[x, y] = new Room(false, TypeSalle.Vide, new Vector2(x, y));
+                map[x, y] = new Room(false, TypeSalle.Vide, new IndexGrid(x, y));
             }
         }
     }
 
     // Récupère les 8 voisins autour d’une case (si hors limite → null)
-    Room[] GetAllVoisins(Vector2 co)
+    Room[] GetAllVoisins(IndexGrid co)
     {
         Room[] result = new Room[8];
 
-        int cx = (int)co.x;
-        int cy = (int)co.y;
+        int cx = co.x;
+        int cy = co.y;
 
         result[0] = GetRoom(cx - 1, cy);     // Gauche
         result[1] = GetRoom(cx - 1, cy + 1); // Haut-Gauche
@@ -142,33 +191,33 @@ public class GenerationProceduralManager : MonoBehaviour
         return result;
     }
 
-    Room getVoisin(Vector2 co, Direction dir)
+    Room getVoisin(IndexGrid co, Direction dir)
     {
         Room result = null;
 
-        int cx = (int)co.x;
-        int cy = (int)co.y;
+        int cx = co.x;
+        int cy = co.y;
 
 
         switch (dir)
         {
             case Direction.gauche:
-                // logique gauche
+                
                 result = GetRoom(cx - 1, cy);     // Gauche
                 break;
 
             case Direction.droite:
-                // logique droite
+                
                 result = GetRoom(cx + 1, cy);     // Droite
                 break;
 
             case Direction.haut:
-                // logique haut
+                
                 result = GetRoom(cx, cy + 1);     // Haut
                 break;
 
             case Direction.bas:
-                // logique bas
+                
                 result = GetRoom(cx, cy - 1);     // Bas
                 break;
 
@@ -186,17 +235,38 @@ public class GenerationProceduralManager : MonoBehaviour
     /// </summary>
     /// <param name="co">Coordoné de la room</param>
     /// <returns>un array des voisin</returns>
-    Room[] GetAllCloseVoisins(Vector2 co)
+    Room[] GetAllCloseVoisins(IndexGrid co)
     {
         Room[] result = new Room[4];
 
-        int cx = (int)co.x;
-        int cy = (int)co.y;
+        int cx = co.x;
+        int cy = co.y;
 
         result[0] = GetRoom(cx - 1, cy);     // Gauche
         result[1] = GetRoom(cx, cy + 1);     // Haut
         result[2] = GetRoom(cx + 1, cy);     // Droite
         result[3] = GetRoom(cx, cy - 1);     // Bas
+
+        return result;
+    }
+
+    // Récupère les 4 voisins les plus proche autour d’une case (si hors limite → null)
+    /// <summary>
+    /// Récupére les coordoné des 4 voisin dans cette ordre gauche, haut,droite,bas
+    /// </summary>
+    /// <param name="co">Coordoné de la room</param>
+    /// <returns>un array des voisin</returns>
+    IndexGrid[] GetAllCloseVoisinsCo(IndexGrid co)
+    {
+        IndexGrid[] result = new IndexGrid[4];
+
+        int cx = co.x;
+        int cy = co.y;
+
+        result[0] = new IndexGrid(cx - 1, cy);     // Gauche
+        result[1] = new IndexGrid(cx, cy + 1);     // Haut
+        result[2] = new IndexGrid(cx + 1, cy);     // Droite
+        result[3] = new IndexGrid(cx, cy - 1);     // Bas
 
         return result;
     }
@@ -211,62 +281,71 @@ public class GenerationProceduralManager : MonoBehaviour
         return map[x, y];
     }
 
-    // renvoie une liste des cooronée présente entre coMin et coMax
-    List<Vector2> GetAllCoBetweenMinMaxCo(Vector2 coMin, Vector2 coMax)
+    // Retourne directement la Room si elle existe, sinon null
+    Room GetRoom(IndexGrid co)
     {
-        float coMaxX = coMax.x;
-        float coMaxY = coMax.y;
-        float coMinX = coMin.x;
-        float coMinY = coMin.y;
-        List<Vector2> result = new List<Vector2>();
+        // Hors limite → pas de room → null
+        if (co.x < 0 || co.y < 0 || co.x >= 9 || co.y >= 9)
+            return null;
+
+        return map[co.x, co.y];
+    }
+
+    // renvoie une liste des cooronée présente entre coMin et coMax
+    List<IndexGrid> GetAllCoBetweenMinMaxCo(IndexGrid coMin, IndexGrid coMax)
+    {
+        int coMaxX = coMax.x;
+        int coMaxY = coMax.y;
+        int coMinX = coMin.x;
+        int coMinY = coMin.y;
+        List<IndexGrid> result = new List<IndexGrid>();
+        // Min est plus grand que max cela inverse les valuer (genre si on vuet un chemin entre 4.4 et 0.1)
         if (coMin.x > coMax.x)
         {
             coMaxX = coMin.x;
             coMinX = coMax.x;
         }
-        if (coMin.y > coMax.y) { coMaxY = coMin.y; coMinY = coMax.y; }
-
-        //Debug.Log("GetAllCoBetweenMinMaxCo = coMin = " + coMin + " coMax = " + coMax);
-        // tant que co index x est plus petit qye comax.x 
-        for (int XI = (int)coMinX; XI <= coMaxX; XI++)
+        if (coMin.y > coMax.y) 
         {
-            for (int YI = (int)coMinY; YI <= coMaxY; YI++)
+            coMaxY = coMin.y;
+            coMinY = coMax.y;
+        }
+
+        
+        // récupére tout les coordonée entre les x et y des 2 coordonée
+        for (int XI = coMinX; XI <= coMaxX; XI++)
+        {
+            for (int YI = coMinY; YI <= coMaxY; YI++)
             {
-                result.Add(new Vector2(XI, YI));
+                result.Add(new IndexGrid(XI, YI));
             }
         }
         return result;
     }
 
-    // renvoie une co aléatoire a partir d'une liste de liste de co 
-    Vector2 GetRandomCoInListRange(List<List<Vector2>> listeCo)
+
+    List<IndexGrid> FusionneListe(List<List<IndexGrid>> listeCo)
     {
-        List<Vector2> fusion = new List<Vector2>();
+        List<IndexGrid> fusion = new List<IndexGrid>();
 
         foreach (var subList in listeCo)
         { fusion.AddRange(subList); }
-            
-
-        return fusion[UnityEngine.Random.Range(0, fusion.Count)];
+        
+        return fusion;
     }
 
-    // renvoie une room aléatoire a partir d'une liste de liste de co 
-    Room GetRandomRoomInListRange(List<List<Vector2>> listeCo)
-    {
-        List<Vector2> fusion = new List<Vector2>();
-
-        foreach (var subList in listeCo)
-        { fusion.AddRange(subList); }
-
-        Vector2 coAleatoire = fusion[UnityEngine.Random.Range(0, fusion.Count)];
-        return map[(int)coAleatoire.x , (int)coAleatoire.y];
-    }
-
-    // renvoie une co aléatoire a partir d'une liste
+    // renvoie une room aléatoire a partir d'une liste
     Room GetRandomRoomInListRange(List<Room> listeRoom)
     {
        
         return listeRoom[UnityEngine.Random.Range(0, listeRoom.Count)];
+    }
+    // renvoie une co aléatoire a partir d'une liste
+    Room GetRandomRoomInListRange(List<IndexGrid> listeRoom)
+    {
+        IndexGrid coAleatoire = listeRoom[UnityEngine.Random.Range(0, listeRoom.Count)];
+        return map[coAleatoire.x, coAleatoire.y];
+        //return listeRoom[UnityEngine.Random.Range(0, listeRoom.Count)];
     }
 
     // co min = 4,4 coMax = 8,5
@@ -274,19 +353,19 @@ public class GenerationProceduralManager : MonoBehaviour
     // 4 +4 = 8
     // 4+1 = 5
     // on récupére les case entre 4,4 et 8,4 ensuite entre 8,4 et 8,5
-    List<Vector2> GetCoPathBetweenTwoCoo(Vector2 coMin, Vector2 coMax)
+    List<IndexGrid> GetCoPathBetweenTwoCoo(IndexGrid coMin, IndexGrid coMax)
     {
-        List<Vector2> result = new List<Vector2>();
-        float ecartX = coMax.x - coMin.x;
-        float ecartY = coMax.y - coMin.y;
+        List<IndexGrid> result = new List<IndexGrid>();
+        int ecartX = coMax.x - coMin.x;
+        int ecartY = coMax.y - coMin.y;
 
         //Debug.Log("comin = " + coMin +  ", comax = " + coMax + ", ecart = " + ecartX + "," + ecartY);
 
-        List<Vector2> lignevertical = GetAllCoBetweenMinMaxCo(coMin, new Vector2(coMin.x + ecartX , coMin.y));
-        List<Vector2> ligneveHorizontal = GetAllCoBetweenMinMaxCo(new Vector2(coMin.x + ecartX, coMin.y), new Vector2(coMin.x + ecartX , coMin.y + ecartY));
+        List<IndexGrid> lignevertical = GetAllCoBetweenMinMaxCo(coMin, new IndexGrid(coMin.x + ecartX , coMin.y));
+        List<IndexGrid> ligneveHorizontal = GetAllCoBetweenMinMaxCo(new IndexGrid(coMin.x + ecartX, coMin.y), new IndexGrid(coMin.x + ecartX , coMin.y + ecartY));
 
-        Debug.Log("lignevertical = " + lignevertical.IsUnityNull() + "," + lignevertical.Count);
-        Debug.Log("ligneveHorizontal = " + ligneveHorizontal.IsUnityNull() + "," + ligneveHorizontal.Count);
+        //Debug.Log("lignevertical = " + lignevertical.IsUnityNull() + "," + lignevertical.Count);
+        //Debug.Log("ligneveHorizontal = " + ligneveHorizontal.IsUnityNull() + "," + ligneveHorizontal.Count);
         //Debug.Log("ligneveHorizontal = " + ligneveHorizontal.ToString());
 
         result.AddRange(lignevertical);
@@ -296,65 +375,75 @@ public class GenerationProceduralManager : MonoBehaviour
         return result;
     }
 
-    void SetRoomInAllCoList(List<Vector2> coList)
+    void SetRoomInAllCoList(IEnumerable<IndexGrid> coList, TypeSalle type = TypeSalle.Combat) // IEnumerable<IndexGrid> permet d'accpeter a la fois les listn et les array ainsi que d'autre...
     {
         foreach (var item in coList)
         {
-            if(!map[(int)item.x, (int)item.y].IsActive())
+            if(!map[item.x, item.y].IsActive())
             {
-                map[(int)item.x, (int)item.y].SetActive(true);
-                map[(int)item.x, (int)item.y].SetSalleType(TypeSalle.Combat);
+                map[item.x, item.y].SetActive(true);
+                map[item.x, item.y].SetSalleType(type);
             }
             
         }
     }
 
-    List<Room> GetAllActivedRoom()
+    List<Room> GetAllActivedRoom(params TypeSalle[] typeFiltre) // le parametre TypeFiltre n'est pas obligatoire
     {
         List < Room > result = new List<Room>();
         foreach (var item in map)
         {
             if (item.IsActive())
             {
-                result.Add(item);
+                if (typeFiltre == null || typeFiltre.Length == 0 || typeFiltre.Contains(item.GetSalleType()) )
+                {
+                    result.Add(item);
+                }
+                
             }
         }
 
         return result;
     }
-
-    List<Room> GetEmptyRoomWithOneNeighbor()
+    List<Room> GetEmptyRoomWithNeighbor(params TypeSalle[] typeFiltre)
     {
-        List<Room> allRooms = GetAllActivedRoom();
-        List<Room> allNeighbor = new List<Room>();
-        List<Room> result = new List<Room>();
-        Room[] NeighborsOfNeighbors = new Room[8];
-        int nbrVoisinActive = 0;
+        List<Room> allRooms = GetAllActivedRoom(typeFiltre);
+        List<Room> allInactiveNeighbor = new List<Room>();
+        
+        Room[] Neighbors = new Room[8];
+        
 
-        // on parcours toutes les salle en verifiant si c'est des salle de combat
-        foreach (var room in allRooms) {
-            if (room.GetSalleType() == TypeSalle.Combat || room.GetSalleType() == TypeSalle.Spawn)
+        // on parcours toutes les salle en récupérent leur voisin inactif
+        foreach (var room in allRooms)
+        {
+
+            Neighbors = GetAllCloseVoisins(room.IndexInMap);
+
+            foreach (var item in Neighbors)
             {
-                NeighborsOfNeighbors = GetAllVoisins(room.IndexInMap);
-                Debug.Log(" NeighborsOfNeighbors = " + NeighborsOfNeighbors.Length + ", " + room.IndexInMap);
-                foreach (var item in NeighborsOfNeighbors)
+                if (item != null && !item.IsActive())
                 {
-                    if (item != null && !item.IsActive() && item.GetSalleType() != TypeSalle.Boss)
-                    {
-                        allNeighbor.Add(item);
-                    }
+                    allInactiveNeighbor.Add(item);
                 }
             }
         }
 
-        Debug.Log(" allNeighbor = " + allNeighbor.Count);
-        foreach (var room in allNeighbor)
-        { Debug.Log(" all index in allNeighbor :  " + room.IndexInMap); }
+        return allInactiveNeighbor;
+    }
 
-            foreach (var room in allNeighbor) {
+
+    List<Room> GetEmptyRoomWithOneNeighbor()
+    {
+
+        List<Room> result = new List<Room>();
+        List<Room> allInactiveNeighbor = GetEmptyRoomWithNeighbor(TypeSalle.Combat, TypeSalle.Spawn);
+        int nbrVoisinActive = 0;
+
+        // vérifie si il a qu'un voisin
+        foreach (var room in allInactiveNeighbor) {
             nbrVoisinActive = 0;
-            Debug.Log(" GetAllCloseVoisins(room.IndexInMap).Length = " + GetAllCloseVoisins(room.IndexInMap).Length + " , " + room.IndexInMap);
-
+            
+            // compte les voisin
             foreach (var item in GetAllCloseVoisins(room.IndexInMap))
             {
                 if (item != null && item.IsActive())
@@ -362,28 +451,43 @@ public class GenerationProceduralManager : MonoBehaviour
                     nbrVoisinActive++;
                 }
             }
-            Debug.Log(" nbrVoisinActive = " + nbrVoisinActive);
+            // ajoute a la liste si il n'a qu'un voisin
             if (nbrVoisinActive == 1)
             {
                 result.Add(room);
             }
         }
-        Debug.Log(" result = " + result.Count);
+        
         return result;
     }
 
-    void SpawnRoom(Vector2 index, Room salle ,TypeSalle type)
+    void SpawnRoom(IndexGrid index, Room salle ,TypeSalle type)
     {
-        GameObject room = prefabSalle[Array.IndexOf(typeSalleParIndex, type)];
-        
+        Debug.Log(type.ToString());
+        Debug.Log(Array.IndexOf(typeSalleParIndex, type));
+        if (type != TypeSalle.Bloquer)
+        {
+            GameObject room = prefabSalle[Array.IndexOf(typeSalleParIndex, type)];
 
-        Vector3 posRoom = new Vector3(index.x * room.transform.localScale.x * 1.4f, index.y * room.transform.localScale.y * 1.5f, 0);
-        GameObject roomIntstance = Instantiate(room, posRoom,Quaternion.identity);
-        DictInstanciateRooms.Add(index, roomIntstance);
-        //Instantiate(prefabSalle[Array.IndexOf(typeSalleParIndex, type)],
-        //    new Vector3(index.x * ecartEntreSallX, index.y * ecartEntreSallY, 0),
-        //    Quaternion.identity);
 
+            Vector3 posRoom = new Vector3(index.x * room.transform.localScale.x * 1.4f, index.y * room.transform.localScale.y * 1.5f, 0);
+            GameObject roomIntstance = Instantiate(room, posRoom, Quaternion.identity);
+
+            SpawnObstacle(type, posRoom);
+            DictInstanciateRooms.Add(index, roomIntstance);
+            //Instantiate(prefabSalle[Array.IndexOf(typeSalleParIndex, type)],
+            //    new Vector3(index.x * ecartEntreSallX, index.y * ecartEntreSallY, 0),
+            //    Quaternion.identity);
+        }
+
+
+    }
+
+    void SpawnObstacle(TypeSalle type , Vector3 posRoom) {
+        if (type == TypeSalle.Combat)
+        {
+            Instantiate(obstacles[UnityEngine.Random.Range(0, obstacles.Length)], posRoom, Quaternion.identity);
+        }
     }
 
     void SpawnAllRoomInScene()
@@ -419,9 +523,65 @@ public class GenerationProceduralManager : MonoBehaviour
                 {
                     porte.roomCible = cible;// getVoisin(item.key, porte.direction).IndexInMap
                 }
-                    
+                else
+                {
+                    porte.gameObject.SetActive(false);
+                }
+
             }
         }
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// renvoie une co aléatoire a partir d'une liste de liste de co 
+//Vector2 GetRandomCoInListRange(List<List<Vector2>> listeCo)
+//{
+//    List<Vector2> fusion = new List<Vector2>();
+
+//    foreach (var subList in listeCo)
+//    { fusion.AddRange(subList); }
+
+
+//    return fusion[UnityEngine.Random.Range(0, fusion.Count)];
+//}
+
+//// renvoie une room aléatoire a partir d'une liste de liste de co 
+//Room GetRandomRoomInListRange(List<List<Vector2>> listeCo)
+//{
+//    List<Vector2> fusion = new List<Vector2>();
+
+//    foreach (var subList in listeCo)
+//    { fusion.AddRange(subList); }
+
+//    Vector2 coAleatoire = fusion[UnityEngine.Random.Range(0, fusion.Count)];
+//    return map[coAleatoire.x , coAleatoire.y];
+//}
