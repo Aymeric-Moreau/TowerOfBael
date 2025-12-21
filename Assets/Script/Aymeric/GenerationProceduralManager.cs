@@ -14,6 +14,12 @@ public struct IndexMinMax
     public int maxX;
     public int maxY;
 }
+[Serializable]
+public struct obstacleValue
+{
+    public GameObject prefab;
+    public Direction[] directionsNeed;
+}
 
 public class GenerationProceduralManager : MonoBehaviour
 {
@@ -24,6 +30,7 @@ public class GenerationProceduralManager : MonoBehaviour
     
     public TypeSalle[] typeSalleParIndex;
     public GameObject[] prefabSalle;
+    public obstacleValue[] obstacleValues;
     public float ecartEntreSallX = 50;
     public float ecartEntreSallY = 40;
     public int seed = 0;
@@ -473,7 +480,7 @@ public class GenerationProceduralManager : MonoBehaviour
             Vector3 posRoom = new Vector3(index.x * room.transform.localScale.x * 1.4f, index.y * room.transform.localScale.y * 1.5f, 0);
             GameObject roomIntstance = Instantiate(room, posRoom, Quaternion.identity);
 
-            SpawnObstacle(type, posRoom);
+            SpawnObstacle(type, posRoom, salle);
             DictInstanciateRooms.Add(index, roomIntstance);
             //Instantiate(prefabSalle[Array.IndexOf(typeSalleParIndex, type)],
             //    new Vector3(index.x * ecartEntreSallX, index.y * ecartEntreSallY, 0),
@@ -483,9 +490,12 @@ public class GenerationProceduralManager : MonoBehaviour
 
     }
 
-    void SpawnObstacle(TypeSalle type , Vector3 posRoom) {
+    void SpawnObstacle(TypeSalle type , Vector3 posRoom, Room salle) {
         if (type == TypeSalle.Combat)
         {
+            GameObject obstacleChoisis = obstacles[UnityEngine.Random.Range(0, obstacles.Length)];
+           Direction[] directionBloquer = obstacleChoisis.GetComponent<obstacleManager>().cheminBloquer;
+
             Instantiate(obstacles[UnityEngine.Random.Range(0, obstacles.Length)], posRoom, Quaternion.identity);
         }
     }

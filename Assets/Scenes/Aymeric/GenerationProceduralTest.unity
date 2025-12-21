@@ -454,6 +454,8 @@ MonoBehaviour:
   - {fileID: 8057167990335211398, guid: 6ce0b8d2a3fe2c848abd7ffd41ee0826, type: 3}
   - {fileID: 8394659249190886618, guid: 77956b3cbe959624a9940d20c4a26878, type: 3}
   - {fileID: 7071768726608461597, guid: 4f93b96bd663b774d9cc379d59e380cf, type: 3}
+  - {fileID: 4150403332292240362, guid: 59a054b5bc7f6d44db875b3613d710a4, type: 3}
+  - {fileID: 8394659249190886618, guid: 77956b3cbe959624a9940d20c4a26878, type: 3}
   typeSalleParIndex: 0400000001000000020000000300000005000000
   prefabSalle:
   - {fileID: 684056651384381653, guid: 33759a3ef5cbda6499affb9a8f37bae0, type: 3}
@@ -461,6 +463,9 @@ MonoBehaviour:
   - {fileID: 3312078516326493622, guid: 30fb89390491dab409077be65e401a13, type: 3}
   - {fileID: 305043730926302545, guid: 39a1ad2289613994eb630d3d2513fd9d, type: 3}
   - {fileID: 4227268296291503627, guid: f7888e7a3c15ef5458b3b319ae3d21f2, type: 3}
+  obstacleValues:
+  - prefab: {fileID: 0}
+    directionsNeed: 
   ecartEntreSallX: 50
   ecartEntreSallY: 40
   seed: 0

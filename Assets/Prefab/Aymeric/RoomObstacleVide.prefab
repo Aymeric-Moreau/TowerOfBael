@@ -68,6 +68,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RoomObstacleVide
       objectReference: {fileID: 0}
+    - target: {fileID: 9153600949410903931, guid: 6ce0b8d2a3fe2c848abd7ffd41ee0826, type: 3}
+      propertyPath: directionDoorsNeeded.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

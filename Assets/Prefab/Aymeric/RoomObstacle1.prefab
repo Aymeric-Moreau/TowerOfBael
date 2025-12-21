@@ -489,6 +489,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1270670011818970263}
+  - component: {fileID: 9153600949410903931}
   m_Layer: 0
   m_Name: RoomObstacle1
   m_TagString: Untagged
@@ -515,3 +516,16 @@ Transform:
   - {fileID: 3197173997281408545}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9153600949410903931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8057167990335211398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 478b0ec1fa2a9b9428e255d6bc58f1d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  directionDoorsNeeded: 00000000010000000200000003000000
