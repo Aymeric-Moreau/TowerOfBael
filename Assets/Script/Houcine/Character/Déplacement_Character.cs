@@ -11,7 +11,7 @@ public class Déplacement_Character : MonoBehaviour
     private float deplacementAxeHorizontal;
 
     // Vitesse de déplacement du joueur
-    public float vitesseDeplacement = 10f;
+    public float vitesseDeplacementPersonnage = 10f;
 
     // Référence au Rigidbody2D pour gérer le mouvement physique
     private Rigidbody2D rb;
@@ -41,11 +41,11 @@ public class Déplacement_Character : MonoBehaviour
         //  Déplacement vertical
         if (Input.GetKey(KeyCode.Z) || Input.GetKey(KeyCode.W))
         {
-           Vertical = Vector2.up  * vitesseDeplacement * Time.fixedDeltaTime;
+           Vertical = Vector2.up  * vitesseDeplacementPersonnage * Time.fixedDeltaTime;
         } else if (Input.GetKey(KeyCode.S))
         {
             Vertical = Vector2.down *
-            vitesseDeplacement * Time.fixedDeltaTime;
+            vitesseDeplacementPersonnage * Time.fixedDeltaTime;
         }
 
         
@@ -53,11 +53,11 @@ public class Déplacement_Character : MonoBehaviour
         // Déplacement horizontal
         if (Input.GetKey(KeyCode.D))
         {
-            Horizontal = Vector2.right * vitesseDeplacement * Time.fixedDeltaTime;
+            Horizontal = Vector2.right * vitesseDeplacementPersonnage * Time.fixedDeltaTime;
         } else if (Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.A))
             {
-            Horizontal = Vector2.left * 
-            vitesseDeplacement * Time.fixedDeltaTime;
+            Horizontal = Vector2.left *
+            vitesseDeplacementPersonnage * Time.fixedDeltaTime;
         }
 
 

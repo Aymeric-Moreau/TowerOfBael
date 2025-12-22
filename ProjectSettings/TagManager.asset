@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Mur
   - Ennemie
+  - Projectile
+  - Obstacle
   layers:
   - Default
   - TransparentFX

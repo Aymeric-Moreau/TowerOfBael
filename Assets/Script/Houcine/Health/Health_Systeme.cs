@@ -15,6 +15,24 @@ public class Health_Systeme : MonoBehaviour
     [SerializeField]
     private float Current_Health;
 
+    // Propriété publique pour lire la vie actuelle
+    public float CurrentHealth
+    {
+        get { return Current_Health; }
+    }
+    void Start()
+    {
+        // Vérifie que la référence au Heart_UI n'est pas vide
+        if (heartUI != null)
+        {
+            // Crée dynamiquement les cœurs dans le UI Manager
+            // Le nombre de cœurs est calculé à partir de la vie maximale du joueur
+            heartUI.CreateHearts((int)Maximum_Health);
+            // Met à jour l'affichage des cœurs pour refléter la vie actuelle
+            // Par exemple, certains cœurs peuvent être pleins, à moitié ou vides
+            heartUI.UpdateHearts((int)Current_Health);
+        }
+    }
     // Référence au script wrapper qui gère l'invincibilité
     public Character_Damge_Inviincible invincibleHandler;
 
@@ -54,6 +72,8 @@ public class Health_Systeme : MonoBehaviour
     // Fonction pour infliger des dégâts
     public void TakeDamge(float Damage)
     {
+
+
         // Si la vie est déjà à 0 ou si le personnage est invincible, on ne fait rien
         if (Current_Health == 0 || Invincible)
         {
