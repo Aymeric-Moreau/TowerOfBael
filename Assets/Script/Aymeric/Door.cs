@@ -11,7 +11,7 @@ public enum Direction
 
 public class Door : MonoBehaviour
 {
-    public Vector2 indexRoom;
+    public IndexGrid indexRoom;
     public GameObject roomCible;
     public Direction direction;
     public Transform spawnPoint;
