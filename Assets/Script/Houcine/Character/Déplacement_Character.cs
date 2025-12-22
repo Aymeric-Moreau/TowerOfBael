@@ -24,6 +24,9 @@ public class Déplacement_Character : MonoBehaviour
     //  Indique si le joueur est vivant ou mort
     public bool estVivant = true;
 
+  
+
+
     // Start is called before the first frame update
     void Start()
     {

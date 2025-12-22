@@ -28,6 +28,7 @@ public class Health_Systeme : MonoBehaviour
             // Crée dynamiquement les cœurs dans le UI Manager
             // Le nombre de cœurs est calculé à partir de la vie maximale du joueur
             heartUI.CreateHearts((int)Maximum_Health);
+
             // Met à jour l'affichage des cœurs pour refléter la vie actuelle
             // Par exemple, certains cœurs peuvent être pleins, à moitié ou vides
             heartUI.UpdateHearts((int)Current_Health);
@@ -67,6 +68,12 @@ public class Health_Systeme : MonoBehaviour
         Collider2D col = GetComponent<Collider2D>();
         if (col != null)
             col.enabled = false;
+
+        Game_Over game_over = FindObjectOfType<Game_Over>();
+        if (game_over != null)
+            game_over.ShowGameOver();
+
+
     }
 
     // Fonction pour infliger des dégâts

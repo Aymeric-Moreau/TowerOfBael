@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Ennemie_Dégat_Corp_à_Corp : MonoBehaviour
 {
-    //Montant de dégâts infligé par l'ennemi
+    //Montant de dégâts infligé par l'ennemi au contact physique
     [SerializeField]
     private float damage_amount;
 
