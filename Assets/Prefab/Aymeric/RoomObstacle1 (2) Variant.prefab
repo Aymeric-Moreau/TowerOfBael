@@ -96,6 +96,18 @@ PrefabInstance:
       propertyPath: cheminBloquer.Array.data[0]
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 9153600949410903931, guid: 6ce0b8d2a3fe2c848abd7ffd41ee0826, type: 3}
+      propertyPath: ensenbleDEnnemisPossible.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9153600949410903931, guid: 6ce0b8d2a3fe2c848abd7ffd41ee0826, type: 3}
+      propertyPath: ensenbleDEnnemisPossible.Array.data[0]
+      value: 
+      objectReference: {fileID: 6778985330881803707, guid: e5a0b0ef26673ae45b9ceb7afac48971, type: 3}
+    - target: {fileID: 9153600949410903931, guid: 6ce0b8d2a3fe2c848abd7ffd41ee0826, type: 3}
+      propertyPath: ensenbleDEnnemisPossible.Array.data[1]
+      value: 
+      objectReference: {fileID: 5387786277090697852, guid: 13e7b8ba2e02f0743aa2a4b910a554f3, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

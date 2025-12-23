@@ -40,9 +40,24 @@ public class GenerationProceduralManager : MonoBehaviour
     IndexGrid SpawnCo;
     IndexGrid BossCo;
 
+    public GameObject player;
+
+    private static GenerationProceduralManager instance;
+
+    void Awake()
+    {
+        if (instance != null)
+        {
+            Debug.LogError("GenerationProceduralManager dupliqué — destruction");
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
+    }
 
     void Start()
     {
+        Debug.Log("debut gen proce dural : " + Time.frameCount);
         initialization();
         placingSpecialRoom();
         placingPathwayRoom();
@@ -122,8 +137,13 @@ public class GenerationProceduralManager : MonoBehaviour
         // ajout de salle combat a des position aléatoire tout en étant a coté d'une salle déja existante
         List<Room> neighbors = GetEmptyRoomWithNeighbor(TypeSalle.Combat, TypeSalle.Spawn);
         int nbrSallecreer = 0;
-        while (nbrSallecreer != nbrSalleEnPlus)
+        int maxTry = 50;
+        int tryCount = 0;
+
+        while (nbrSallecreer < nbrSalleEnPlus && tryCount < maxTry)
         {
+            tryCount++;
+
             Room combatRoom = GetRandomRoomInListRange(neighbors);
             if (!combatRoom.IsActive())
             {
@@ -131,8 +151,11 @@ public class GenerationProceduralManager : MonoBehaviour
                 combatRoom.SetSalleType(TypeSalle.Combat);
                 nbrSallecreer++;
             }
+        }
 
-            
+        if (tryCount >= maxTry)
+        {
+            Debug.LogWarning("Impossible de placer toutes les salles combat");
         }
 
 
@@ -479,6 +502,8 @@ public class GenerationProceduralManager : MonoBehaviour
 
     void SpawnRoom(IndexGrid index, Room salle ,TypeSalle type)
     {
+        if (DictInstanciateRooms.ContainsKey(index))
+            return;
         Debug.Log(type.ToString());
         Debug.Log(Array.IndexOf(typeSalleParIndex, type));
         if (type != TypeSalle.Bloquer)
@@ -488,8 +513,8 @@ public class GenerationProceduralManager : MonoBehaviour
 
             Vector3 posRoom = new Vector3(index.x * room.transform.localScale.x * 1.4f, index.y * room.transform.localScale.y * 1.5f, 0);
             GameObject roomIntstance = Instantiate(room, posRoom, Quaternion.identity);
-
-            SpawnObstacle(type, posRoom, salle);
+            RoomManager RMScript = roomIntstance.GetComponent<RoomManager>();
+            SpawnObstacle(type, posRoom, salle, RMScript);
             DictInstanciateRooms.Add(index, roomIntstance);
             //Instantiate(prefabSalle[Array.IndexOf(typeSalleParIndex, type)],
             //    new Vector3(index.x * ecartEntreSallX, index.y * ecartEntreSallY, 0),
@@ -499,31 +524,121 @@ public class GenerationProceduralManager : MonoBehaviour
 
     }
 
-    void SpawnObstacle(TypeSalle type , Vector3 posRoom, Room salle) {
-        if (type == TypeSalle.Combat)
-        {
-            bool obstacleIsPlacer = false;
-            while (!obstacleIsPlacer)
-            {
-                bool isInvalid = false;
-                GameObject[] listeObstacl = RandomizeArray(obstacles);
-                GameObject obstacleChoisis = listeObstacl[UnityEngine.Random.Range(0, obstacles.Length)];
-                obstacleManager obstacleScript = obstacleChoisis.GetComponent<obstacleManager>();
-                foreach (var item in obstacleScript.cheminBloquer)
-                {
-                    if (salle.Voisins.ContainsKey(item))
-                    {
+    //void SpawnObstacle(TypeSalle type , Vector3 posRoom, Room salle, RoomManager scriptPrefab ) {
+    //    if (type == TypeSalle.Combat)
+    //    {
+    //        bool obstacleIsPlacer = false;
+    //        while (!obstacleIsPlacer)
+    //        {
+    //            bool isInvalid = false;
+    //            GameObject[] listeObstacl = RandomizeArray(obstacles);
+    //            GameObject obstacleChoisis = listeObstacl[UnityEngine.Random.Range(0, obstacles.Length)];
+    //            obstacleManager obstacleScript = obstacleChoisis.GetComponent<obstacleManager>();
+    //            foreach (var item in obstacleScript.cheminBloquer)
+    //            {
+    //                if (salle.Voisins.ContainsKey(item))
+    //                {
 
-                        isInvalid = true;
-                        break;
-                    }
-                }
-                if (!isInvalid)
+    //                    isInvalid = true;
+    //                    break;
+    //                }
+    //            }
+    //            if (!isInvalid)
+    //            {
+    //                obstacleIsPlacer = true;
+    //                Instantiate(obstacleChoisis, posRoom, Quaternion.identity);
+    //                GameObject ennemis = Instantiate(obstacleScript.ensenbleDEnnemisPossible[UnityEngine.Random.Range(0, obstacleScript.ensenbleDEnnemisPossible.Length)], posRoom, Quaternion.identity);
+                    
+    //                SetPlayerInAI(ennemis);
+    //                ennemis.SetActive(false);
+    //                scriptPrefab.ennemis = ennemis;
+    //            }
+    //        } 
+    //    }
+    //}
+
+    void SpawnObstacle(TypeSalle type, Vector3 posRoom, Room salle, RoomManager scriptPrefab)
+    {
+       
+
+        if (type != TypeSalle.Combat)
+            return;
+
+        const int MAX_TRY = 20;
+        int tryCount = 0;
+
+        while (tryCount < MAX_TRY)
+        {
+            tryCount++;
+
+            bool isInvalid = false;
+
+            GameObject obstacleChoisis = obstacles[UnityEngine.Random.Range(0, obstacles.Length)];
+            obstacleManager obstacleScript = obstacleChoisis.GetComponent<obstacleManager>();
+
+            foreach (var item in obstacleScript.cheminBloquer)
+            {
+                if (salle.Voisins.ContainsKey(item))
                 {
-                    obstacleIsPlacer = true;
-                    Instantiate(obstacleChoisis, posRoom, Quaternion.identity);
+                    isInvalid = true;
+                    break;
                 }
-            } 
+            }
+
+            if (!isInvalid)
+            {
+                Instantiate(obstacleChoisis, posRoom, Quaternion.identity);
+
+                GameObject ennemis = Instantiate(
+                    obstacleScript.ensenbleDEnnemisPossible[
+                        UnityEngine.Random.Range(0, obstacleScript.ensenbleDEnnemisPossible.Length)
+                    ],
+                    posRoom,
+                    Quaternion.identity
+                );
+
+                SetPlayerInAI(ennemis);
+                ennemis.SetActive(false);
+                scriptPrefab.ennemis = ennemis;
+                return;
+            }
+        }
+
+        Debug.LogWarning("Aucun obstacle valide trouvé pour cette salle");
+    }
+
+
+    void SetPlayerInAI(GameObject ennemis)
+    {
+        // Shooter
+        Enemy_Shooter[] shooters = ennemis.GetComponentsInChildren<Enemy_Shooter>();
+        if (shooters.Length > 0)
+        {
+            foreach (Enemy_Shooter shooter in shooters)
+            {
+                //shooter.player = player.transform;
+                shooter.player = GameObject.FindWithTag("Player").transform;
+            }
+        }
+
+        // Fuyard
+        AIEnnemisFuyeur[] fuyards = ennemis.GetComponentsInChildren<AIEnnemisFuyeur>();
+        if (fuyards.Length > 0)
+        {
+            foreach (AIEnnemisFuyeur fuyard in fuyards)
+            {
+                fuyard.target = GameObject.FindWithTag("Player").transform;
+            }
+        }
+
+        // Suiveur
+        AIEnnemisSuiveur[] suiveurs = ennemis.GetComponentsInChildren<AIEnnemisSuiveur>();
+        if (suiveurs.Length > 0)
+        {
+            foreach (AIEnnemisSuiveur suiveur in suiveurs)
+            {
+                suiveur.target = GameObject.FindWithTag("Player").transform;
+            }
         }
     }
 
@@ -532,6 +647,7 @@ public class GenerationProceduralManager : MonoBehaviour
         
         foreach (var item in GetAllActivedRoom())
         {
+            
             SpawnRoom(item.IndexInMap,item,item.GetSalleType());
         }
         
@@ -605,7 +721,7 @@ public class GenerationProceduralManager : MonoBehaviour
             indexChoisis = arrayOfIndex[UnityEngine.Random.Range(0, arrayOfIndex.Count)];
             //Debug.Log("array fo index : " + i + " . " );
             result[i] = array[indexChoisis];
-            arrayOfIndex.RemoveAt(arrayOfIndex.IndexOf(i));
+            arrayOfIndex.RemoveAt(arrayOfIndex.IndexOf(indexChoisis));
         }
 
         return result;

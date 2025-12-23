@@ -5,6 +5,7 @@ using UnityEngine;
 public class obstacleManager : MonoBehaviour
 {
     public Direction[] cheminBloquer;
+    public GameObject[] ensenbleDEnnemisPossible;
     // Start is called before the first frame update
     void Start()
     {

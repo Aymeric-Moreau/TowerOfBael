@@ -45,6 +45,7 @@ public class Door : MonoBehaviour
             
             Camera.main.transform.position = roomCible.transform.position + new Vector3(0,0,-20);
             collision.gameObject.transform.position = RMScript.GetDoor(dirCible).spawnPoint.position;
+            RMScript.ennemis.SetActive(true);
             //collision.transform.position;
             //collision.transform.position;
         }

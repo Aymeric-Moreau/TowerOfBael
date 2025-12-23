@@ -6,6 +6,7 @@ public class RoomManager : MonoBehaviour
     Vector2 Index;
     Vector2 CoordonerInScene;
     public Door[] portes;
+    public GameObject ennemis;
     //public Dictionary<Direction, Door> lesPortes;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

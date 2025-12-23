@@ -528,4 +528,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 478b0ec1fa2a9b9428e255d6bc58f1d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  directionDoorsNeeded: 00000000010000000200000003000000
+  cheminBloquer: 
+  ensenbleDEnnemisPossible:
+  - {fileID: 6119719070437541574, guid: 230e8e94e75dd6b4aaf7a6ffbb341ae6, type: 3}
+  - {fileID: 337046904476085597, guid: 39ca1b7009e88dd4e9e90b1f9b99484f, type: 3}

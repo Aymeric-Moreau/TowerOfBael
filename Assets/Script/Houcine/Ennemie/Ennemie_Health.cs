@@ -38,6 +38,21 @@ public class Ennemie_Health : MonoBehaviour
         // Décrémente la vie de notre ennemie
         Current_Health_Ennemie -= Damage;
 
+        //Color color = gameObject.GetComponent<SpriteRenderer>().color;
+
+        //bool animFinie = false;
+        //float time = 0f;
+
+        //while (true) {
+        //    time = + Time.deltaTime;
+        //    if (time > 1)
+        //    {
+                
+        //    }
+
+        //}
+
+
         // Empêche que la vie devienne négative
         if (Current_Health_Ennemie < 0)
         {

@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &7786812204904590101
+--- !u!1001 &4328414206551389371
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4744733906909216477, guid: d98b29c9734283d4586d7ef376a93dfc, type: 3}
       propertyPath: m_Name
-      value: Ennemie_Suiveur
+      value: Ennemie_Mannequin_fuyeur
       objectReference: {fileID: 0}
     - target: {fileID: 6897586267847195311, guid: d98b29c9734283d4586d7ef376a93dfc, type: 3}
       propertyPath: m_LocalPosition.x
@@ -18,7 +18,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6897586267847195311, guid: d98b29c9734283d4586d7ef376a93dfc, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 16
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 6897586267847195311, guid: d98b29c9734283d4586d7ef376a93dfc, type: 3}
       propertyPath: m_LocalPosition.z
@@ -54,7 +54,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7064523031245554958, guid: d98b29c9734283d4586d7ef376a93dfc, type: 3}
       propertyPath: m_Color.g
-      value: 0.17541838
+      value: 0.9484322
       objectReference: {fileID: 0}
     - target: {fileID: 7064523031245554958, guid: d98b29c9734283d4586d7ef376a93dfc, type: 3}
       propertyPath: m_Color.r
@@ -66,24 +66,24 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4744733906909216477, guid: d98b29c9734283d4586d7ef376a93dfc, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1890816911184716864}
+      addedObject: {fileID: 5181134433345626317}
   m_SourcePrefab: {fileID: 100100000, guid: d98b29c9734283d4586d7ef376a93dfc, type: 3}
---- !u!1 &3299166175557096904 stripped
+--- !u!1 &9063832419520268902 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4744733906909216477, guid: d98b29c9734283d4586d7ef376a93dfc, type: 3}
-  m_PrefabInstance: {fileID: 7786812204904590101}
+  m_PrefabInstance: {fileID: 4328414206551389371}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1890816911184716864
+--- !u!114 &5181134433345626317
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3299166175557096904}
+  m_GameObject: {fileID: 9063832419520268902}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17be8d50e948d864eb34b388ba9d6217, type: 3}
+  m_Script: {fileID: 11500000, guid: 62b33e3246d04ac44b9473739b7bda54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  speed: 3
+  speed: 1
