@@ -18,13 +18,14 @@ public class Déplacement_Character : MonoBehaviour
 
     //  Variables pour le tir
     public GameObject projectilePrefab;
-    public float cooldownTir = 0.3f;
+    public float cooldownNormal;      // pour les larmes normales
+    public float cooldownBrimstone;     // pour Brimstone (cet valeur ne sert a rien a part pour visualiser le changement car c'est dans le script collectible qu'on gère le cooldown de cet larme)
     private float timerTir = 0f;
 
     //  Indique si le joueur est vivant ou mort
     public bool estVivant = true;
 
-  
+
 
 
     // Start is called before the first frame update
@@ -44,21 +45,23 @@ public class Déplacement_Character : MonoBehaviour
         //  Déplacement vertical
         if (Input.GetKey(KeyCode.Z) || Input.GetKey(KeyCode.W))
         {
-           Vertical = Vector2.up  * vitesseDeplacementPersonnage * Time.fixedDeltaTime;
-        } else if (Input.GetKey(KeyCode.S))
+            Vertical = Vector2.up * vitesseDeplacementPersonnage * Time.fixedDeltaTime;
+        }
+        else if (Input.GetKey(KeyCode.S))
         {
             Vertical = Vector2.down *
             vitesseDeplacementPersonnage * Time.fixedDeltaTime;
         }
 
-        
+
 
         // Déplacement horizontal
         if (Input.GetKey(KeyCode.D))
         {
             Horizontal = Vector2.right * vitesseDeplacementPersonnage * Time.fixedDeltaTime;
-        } else if (Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.A))
-            {
+        }
+        else if (Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.A))
+        {
             Horizontal = Vector2.left *
             vitesseDeplacementPersonnage * Time.fixedDeltaTime;
         }
@@ -74,7 +77,7 @@ public class Déplacement_Character : MonoBehaviour
         rb.angularVelocity = 0f;
 
     }
-   
+
     // Update is called once per frame
     void Update()
     {
@@ -115,20 +118,50 @@ public class Déplacement_Character : MonoBehaviour
     }
 
     //  Fonction pour tirer une balle
+
     void Tirer(Vector2 dir)
     {
-        //  Si le cooldown n'est pas terminé, on ne peut pas tirer
+        // Si le timer de tir est encore actif, on ne peut pas tirer
         if (timerTir > 0f)
             return;
 
-        // Instanciation du projectile à la position du joueur
-        GameObject balle = Instantiate(projectilePrefab,transform.position,Quaternion.identity);
+        // On instancie le projectile actuel (le prefab défini dans le player)
+        GameObject balleTiree = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
 
-        // On donne la direction à la balle
-        balle.GetComponent<Tear_Character>().direction = dir;
+        // Par défaut, on initialise le cooldown à celui des larmes normales
+        float cooldownActuel = cooldownNormal; 
 
-        // Reset du timer de tir
-        timerTir = cooldownTir;
+        // Vérifie si c'est un Brimstone
+        Brimstone_Character laserScript = balleTiree.GetComponent<Brimstone_Character>();
+
+        if (laserScript != null)
+        {
+            // Détecte la direction pour Brimstone
+            Vector2 dirLaser = Vector2.zero;
+            if (Input.GetKey(KeyCode.UpArrow)) dirLaser = Vector2.up;
+            else if (Input.GetKey(KeyCode.DownArrow)) dirLaser = Vector2.down;
+            else if (Input.GetKey(KeyCode.LeftArrow)) dirLaser = Vector2.left;
+            else if (Input.GetKey(KeyCode.RightArrow)) dirLaser = Vector2.right;
+
+            // On assigne la direction au Brimstone instancié
+            laserScript.direction = dirLaser;
+
+            //// IMPORTANT : On utilise ici la valeur du cooldown stockée dans le collectible
+            // et non celle du player. Même si le player a une valeur de cooldown
+            // différente ça sera toujour le collectible que la variable va récup les donnée !
+            // le timerTir du player reste le seul à gérer le cooldown effectif du tir.
+            cooldownActuel = cooldownBrimstone;
+        }
+        else
+        {
+            // Si ce n’est pas un Brimstone (c’est une larme normale)
+            balleTiree.GetComponent<Tear_Character>().direction = dir;
+            // On utilise le cooldown normal pour gérer le timer du player
+            cooldownActuel = cooldownNormal;
+        }
+
+        // Met à jour le timer
+        timerTir = cooldownActuel;
     }
     void FixedUpdate()
     {

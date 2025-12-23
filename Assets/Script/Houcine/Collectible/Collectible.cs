@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Collectible : MonoBehaviour
 {
-    public enum ItemType { Health, Upgrade} // Type d’item
+    public enum ItemType { Health, NouvelleLarme} // Type d’item
     public ItemType itemType;
     public int healthAmount = 1;           // PV à ajouter si c’est de la vie
     public GameObject newProjectilePrefab; // Prefab à remplacer si c’est un upgrade
@@ -20,14 +20,14 @@ public class Collectible : MonoBehaviour
             {
                 health.GetHealth(healthAmount); // ajoute les PV
             }
-            else if (itemType == ItemType.Upgrade)
+            else if (itemType == ItemType.NouvelleLarme)
             {
                 // Récupère le script de tir du joueur
                 var playerShooter = player.GetComponent<Déplacement_Character>();
                 if (playerShooter != null && newProjectilePrefab != null)
                 {
                     playerShooter.projectilePrefab = newProjectilePrefab; // change le prefab des tirs
-                    player.cooldownTir = NewCooldownProjectile; // change le cooldown du nouveau tir
+                    player.cooldownBrimstone = NewCooldownProjectile; // change le cooldown du nouveau tir
                 }
             }
 
