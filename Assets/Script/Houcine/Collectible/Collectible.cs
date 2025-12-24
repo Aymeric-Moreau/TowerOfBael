@@ -13,7 +13,7 @@ public class Collectible : MonoBehaviour
 
 
     public GameObject newProjectilePrefab; // Prefab à remplacer si c’est un upgrade
-    [HideInInspector] public float NewCooldownProjectile;
+    [HideInInspector] public float NewCooldownProjectile; // Cooldown du laser (gérée depuis le player)
 
     private void OnTriggerEnter2D(Collider2D other)
     {

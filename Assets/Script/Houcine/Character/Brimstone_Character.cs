@@ -2,18 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Ce script gère le comportement d'un projectile spécial du joueur
+// Ce script gère le comportement d'un projectile spécial : le laser Brimstone
 public class Brimstone_Character : MonoBehaviour
 {
     public float duration = 1f; // Durée du laser
-    [HideInInspector] public float damage;   
-    public Vector2 direction;
+    [HideInInspector] public float damage;   // Dégâts du laser (gérée depuis le player)
+    public Vector2 direction;  // Direction dans laquelle le laser se déplace
 
     void Start()
     {
-        
 
-        // Si la direction est horizontale
+
+        // Rotation du laser en fonction de sa direction
         if (direction.x > 0)
             transform.rotation = Quaternion.Euler(0, 0, 0);  // droite
         else if (direction.x < 0)
@@ -30,7 +30,7 @@ public class Brimstone_Character : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D other)
-    {// Si la balle touche un objet avec le tag  "Ennemie"
+    {// Si le laser touche un objet avec le tag  "Ennemie"
         if (other.CompareTag("Ennemie"))
         {
             //  Récupère le script Ennemie_Health de l'ennemie

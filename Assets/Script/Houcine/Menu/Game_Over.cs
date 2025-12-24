@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+// Ce script gère l'écran de Game Over et les boutons liés (Restart, Menu)
 public class Game_Over : MonoBehaviour
 {
     // Référence au panel complet de Game Over (texte + boutons)

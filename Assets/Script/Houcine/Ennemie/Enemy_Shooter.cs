@@ -2,17 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Ce script gère le tir automatique d'un ennemi vers le joueur
 public class Enemy_Shooter : MonoBehaviour
 {
-    public GameObject tearPrefab;
-    public float fireRate = 1.5f; // Temps entre deux tirs en secondes
+    public GameObject tearPrefab;     //Prefab du projectile que l'ennemi va tirer
+    public float fireRate = 1.5f;    // Temps entre deux tirs successifs (en secondes) 
     public float bulletSpeed = 10f; // Vitesse des projectiles
     public Transform player; // Référence au joueur pour viser
-    private Health_Systeme playerHealth;
+    private Health_Systeme playerHealth; // Référence au script de santé du joueur
 
     private float fireTimer; // Timer pour contrôler le délai entre les tirs
     void Start()
     {
+        // Si le joueur est assigné, récupère son composant Health_Systeme
         if (player != null)
             playerHealth = player.GetComponent<Health_Systeme>();
     }
@@ -28,8 +30,8 @@ public class Enemy_Shooter : MonoBehaviour
         // Si le timer dépasse le fireRate, on tire un projectile
         if (fireTimer >= fireRate)
         {
-            Shoot();
-            fireTimer = 0f;
+            Shoot();        // Appelle la fonction de tir
+            fireTimer = 0f; // Réinitialise le timer
         }
     }
 
@@ -41,6 +43,8 @@ public class Enemy_Shooter : MonoBehaviour
 
         // Instancie le projectile à la position de l'ennemi avec rotation nulle
         GameObject tear = Instantiate(tearPrefab, transform.position, Quaternion.identity);
+
+        // Récupère le script du projectile ennemi
         Tear_Ennemie tearScript = tear.GetComponent<Tear_Ennemie>();
 
         if (tearScript != null)
@@ -48,7 +52,9 @@ public class Enemy_Shooter : MonoBehaviour
             // Calcule la direction vers le joueur et la normalise pour que la vitesse soit constante
             Vector2 dir = player.position - transform.position;
             tearScript.direction = dir.normalized;
-            tearScript.vitesse = bulletSpeed; // Définit la vitesse du projectile
+
+            // Définit la vitesse du projectile
+            tearScript.vitesse = bulletSpeed; 
         }
     }
 }

@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-// Ce script gère le déplacement et le tir du personnage joueur
+// Ce script gère le déplacement et les tir du personnage joueur
 public class Déplacement_Character : MonoBehaviour
 {
-    // Variables pour stocker les valeurs des axes de déplacement
-    private float deplacementAxeVertical;
-    private float deplacementAxeHorizontal;
 
     // Vitesse de déplacement du joueur
     public float vitesseDeplacementPersonnage = 10f;
@@ -21,7 +18,6 @@ public class Déplacement_Character : MonoBehaviour
     public float cooldownNormal;     
     public float cooldownBrimstone;     
     private float timerTir = 0f;
-
     public float damageTear = 1f;
     public float damageBrimstone = 5f;
 
@@ -56,8 +52,6 @@ public class Déplacement_Character : MonoBehaviour
             vitesseDeplacementPersonnage * Time.fixedDeltaTime;
         }
 
-
-
         // Déplacement horizontal
         if (Input.GetKey(KeyCode.D))
         {
@@ -87,10 +81,6 @@ public class Déplacement_Character : MonoBehaviour
         // Si le joueur est mort, on ne fait rien
         if (!estVivant)
             return;
-
-        //  Lecture des axes 
-        deplacementAxeVertical = Input.GetAxis("Vertical");
-        deplacementAxeHorizontal = Input.GetAxis("Horizontal");
 
         //  Décrément du timer de tir
         timerTir = timerTir - Time.deltaTime;
@@ -141,22 +131,28 @@ public class Déplacement_Character : MonoBehaviour
 
         if (laserScript != null)
         {
-            // Direction du laser
+            // On assigne la direction de tir au laser
             laserScript.direction = dir;
 
+            // On transmet les dégâts depuis le player vers le Brimstone
+            // Le laser utilisera donc la valeur actuelle du player.damageBrimstone
             laserScript.damage = damageBrimstone;
 
+            // On définit le cooldown actuel du tir à celui du Brimstone
+            // Cela permettra au timer du player de gérer correctement le délai
             cooldownActuel = cooldownBrimstone;
         }
         else
         {
-            // Direction de la larme normale
+            // On assigne la direction de tir à la larme normale
             tearScript.direction = dir;
 
-            // Transmission des dégâts depuis le player
+            // On transmet les dégâts depuis le player vers la larme
+            // La larme normale utilisera donc la valeur actuelle du player.damageTear
             tearScript.tear_damage = damageTear;
 
-            // On utilise le cooldown normal pour gérer le timer du player
+            // On définit le cooldown actuel du tir à celui des larmes normales
+            // Le timer du player va attendre ce délai avant de pouvoir tirer à nouveau
             cooldownActuel = cooldownNormal;
         }
 
