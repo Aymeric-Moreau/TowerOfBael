@@ -11,10 +11,12 @@ public class Tear_Character : MonoBehaviour
     // La direction dans laquelle la balle va se déplacer
     public Vector2 direction;
 
-    [SerializeField]
-    private float tear_damage;
 
-    void Update()
+    [HideInInspector] public float tear_damage;
+
+
+
+        void Update()
     {
         // Déplace la balle dans la direction spécifiée à la vitesse donnée
         // Time.deltaTime permet d'assurer que le déplacement est indépendant du nombre de FPS

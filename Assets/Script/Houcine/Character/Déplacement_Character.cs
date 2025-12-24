@@ -18,9 +18,12 @@ public class Déplacement_Character : MonoBehaviour
 
     //  Variables pour le tir
     public GameObject projectilePrefab;
-    public float cooldownNormal;      // pour les larmes normales
-    public float cooldownBrimstone;     // pour Brimstone (cet valeur ne sert a rien a part pour visualiser le changement car c'est dans le script collectible qu'on gère le cooldown de cet larme)
+    public float cooldownNormal;     
+    public float cooldownBrimstone;     
     private float timerTir = 0f;
+
+    public float damageTear = 1f;
+    public float damageBrimstone = 5f;
 
     //  Indique si le joueur est vivant ou mort
     public bool estVivant = true;
@@ -129,33 +132,30 @@ public class Déplacement_Character : MonoBehaviour
         GameObject balleTiree = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
 
         // Par défaut, on initialise le cooldown à celui des larmes normales
-        float cooldownActuel = cooldownNormal; 
+        float cooldownActuel = cooldownNormal;
 
-        // Vérifie si c'est un Brimstone
+        // Récupération des scripts des projectiles
         Brimstone_Character laserScript = balleTiree.GetComponent<Brimstone_Character>();
+        Tear_Character tearScript = balleTiree.GetComponent<Tear_Character>();
+
 
         if (laserScript != null)
         {
-            // Détecte la direction pour Brimstone
-            Vector2 dirLaser = Vector2.zero;
-            if (Input.GetKey(KeyCode.UpArrow)) dirLaser = Vector2.up;
-            else if (Input.GetKey(KeyCode.DownArrow)) dirLaser = Vector2.down;
-            else if (Input.GetKey(KeyCode.LeftArrow)) dirLaser = Vector2.left;
-            else if (Input.GetKey(KeyCode.RightArrow)) dirLaser = Vector2.right;
+            // Direction du laser
+            laserScript.direction = dir;
 
-            // On assigne la direction au Brimstone instancié
-            laserScript.direction = dirLaser;
+            laserScript.damage = damageBrimstone;
 
-            //// IMPORTANT : On utilise ici la valeur du cooldown stockée dans le collectible
-            // et non celle du player. Même si le player a une valeur de cooldown
-            // différente ça sera toujour le collectible que la variable va récup les donnée !
-            // le timerTir du player reste le seul à gérer le cooldown effectif du tir.
             cooldownActuel = cooldownBrimstone;
         }
         else
         {
-            // Si ce n’est pas un Brimstone (c’est une larme normale)
-            balleTiree.GetComponent<Tear_Character>().direction = dir;
+            // Direction de la larme normale
+            tearScript.direction = dir;
+
+            // Transmission des dégâts depuis le player
+            tearScript.tear_damage = damageTear;
+
             // On utilise le cooldown normal pour gérer le timer du player
             cooldownActuel = cooldownNormal;
         }

@@ -10,6 +10,7 @@ public class Tear_Ennemie : MonoBehaviour
     public float vitesse = 10f;
     // La direction dans laquelle la balle va se déplacer
     public Vector2 direction;
+
     [SerializeField] private float tear_damage;
 
     void Update()

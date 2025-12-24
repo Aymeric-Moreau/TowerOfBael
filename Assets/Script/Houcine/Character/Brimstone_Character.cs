@@ -2,15 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Ce script gère le comportement d'un projectile du joueur
+// Ce script gère le comportement d'un projectile spécial du joueur
 public class Brimstone_Character : MonoBehaviour
 {
     public float duration = 1f; // Durée du laser
-    public float damage = 5f;   // Dégâts du laser
+    [HideInInspector] public float damage;   
     public Vector2 direction;
 
     void Start()
     {
+        
+
         // Si la direction est horizontale
         if (direction.x > 0)
             transform.rotation = Quaternion.Euler(0, 0, 0);  // droite

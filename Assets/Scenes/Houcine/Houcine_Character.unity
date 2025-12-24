@@ -2196,6 +2196,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 460025751614188823, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
+      propertyPath: "Invincible_Dur\xE9e"
+      value: 0.15
+      objectReference: {fileID: 0}
     - target: {fileID: 3229485993283230676, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
       propertyPath: m_Name
       value: Character
@@ -2241,6 +2245,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5939497996932133209, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
+      propertyPath: damageTear
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5939497996932133209, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
       propertyPath: DashCooldown
       value: 10
       objectReference: {fileID: 0}
@@ -2253,8 +2261,12 @@ PrefabInstance:
       value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 5939497996932133209, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
+      propertyPath: damageBrimstone
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5939497996932133209, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
       propertyPath: cooldownBrimstone
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6918660733238017584, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
       propertyPath: heartUI
@@ -2329,6 +2341,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1383307261}
+    - target: {fileID: 7606722366972847125, guid: d98b29c9734283d4586d7ef376a93dfc, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

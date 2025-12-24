@@ -4,9 +4,19 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-// Ce script gère la santé du joueur
+// Ce script gère la santé du joueur ainsi que le feedback visuel (changement de couleur) lorsqu'il subit des dégâts
 public class Health_Systeme : MonoBehaviour
 {
+    // SpriteRenderer du joueur (sert à changer la couleur lors des dégâts)
+    private SpriteRenderer sprite;
+
+    // Couleur d'origine du sprite (avant de prendre des dégâts)
+    private Color baseColor;
+
+    // Référence vers la coroutine de dégâts en cours
+    // Permet d'éviter plusieurs flashs en même temps
+    private Coroutine damageCoroutine;
+
     // La vie maximale du personnage
     [SerializeField]
     private float Maximum_Health;
@@ -33,7 +43,36 @@ public class Health_Systeme : MonoBehaviour
             // Par exemple, certains cœurs peuvent être pleins, à moitié ou vides
             heartUI.UpdateHearts((int)Current_Health);
         }
+
+        // Récupère le SpriteRenderer attaché au joueur
+        sprite = GetComponent<SpriteRenderer>();
+
+        // Vérifie que le SpriteRenderer existe
+        if (sprite != null)
+        {
+            // Sauvegarde la couleur initiale du sprite
+            baseColor = sprite.color;
+        }
+
     }
+
+    // Coroutine appelée quand le joueur prend des dégâts
+    // Elle gère l'effet visuel de "hit" (flash rouge)
+    IEnumerator DamageFlash()
+    {
+        Debug.Log("degat coroutine start");
+
+        // Change la couleur du sprite en rouge
+        sprite.color = Color.red;
+
+        // Attend 0.15 seconde sans bloquer le jeu
+        yield return new WaitForSeconds(0.15f);
+
+        // Restaure la couleur d'origine du sprite
+        sprite.color = baseColor;
+    }
+
+
     // Référence au script wrapper qui gère l'invincibilité
     public Character_Damge_Inviincible invincibleHandler;
 
@@ -69,8 +108,12 @@ public class Health_Systeme : MonoBehaviour
         if (col != null)
             col.enabled = false;
 
+        // Récupère le script Game Over dans la scène
         Game_Over game_over = FindObjectOfType<Game_Over>();
+
+        // Vérifie que le script existe
         if (game_over != null)
+            // Affiche l'écran de Game Over
             game_over.ShowGameOver();
 
 
@@ -79,7 +122,6 @@ public class Health_Systeme : MonoBehaviour
     // Fonction pour infliger des dégâts
     public void TakeDamge(float Damage)
     {
-
 
         // Si la vie est déjà à 0 ou si le personnage est invincible, on ne fait rien
         if (Current_Health == 0 || Invincible)
@@ -99,6 +141,18 @@ public class Health_Systeme : MonoBehaviour
         if (Current_Health < 0)
         {
             Current_Health = 0;
+        }
+
+        // Vérifie que le SpriteRenderer existe
+        if (sprite != null)
+        {
+            // Si une coroutine de dégâts est déjà en cours
+            // on l'arrête pour éviter un empilement de flashs
+            if (damageCoroutine != null)
+                StopCoroutine(damageCoroutine);
+
+            // Lance la nouvelle coroutine de flash rouge
+            damageCoroutine = StartCoroutine(DamageFlash());
         }
 
         // Si la vie atteint 0, le joueur meurt
