@@ -16,15 +16,17 @@ public class Déplacement_Character : MonoBehaviour
     //  Variables pour le tir
     public GameObject projectilePrefab;
     public float cooldownNormal;     
-    public float cooldownBrimstone;     
+    public float cooldownBrimstone;
     private float timerTir = 0f;
     public float damageTear = 1f;
     public float damageBrimstone = 5f;
+    
+    //Indique si le joueur peut bouger ou non
+    private bool peutBouger = true;
+    public float immobilisation; // Permet de définir pendant cb de temps le joueur arrete de bouger apres avoir tier la larme special
 
     //  Indique si le joueur est vivant ou mort
     public bool estVivant = true;
-
-
 
 
     // Start is called before the first frame update
@@ -37,6 +39,9 @@ public class Déplacement_Character : MonoBehaviour
     // Fonction pour gérer le déplacement du joueur
     public void deplacement()
     {
+        if (!peutBouger)
+            return; // bloque le mouvement quand on tire
+
         // On initialise les vecteurs de déplacement vertical et horizontal
         Vector2 Vertical = Vector2.zero;
         Vector2 Horizontal = Vector2.zero;
@@ -141,6 +146,10 @@ public class Déplacement_Character : MonoBehaviour
             // On définit le cooldown actuel du tir à celui du Brimstone
             // Cela permettra au timer du player de gérer correctement le délai
             cooldownActuel = cooldownBrimstone;
+
+            //  le joueur ne peut plus bouger pendant la durée du tir Brimstone
+            peutBouger = false;
+            Invoke(nameof(RendreMouvementPossible), immobilisation);
         }
         else
         {
@@ -167,5 +176,9 @@ public class Déplacement_Character : MonoBehaviour
 
         // Appel de la fonction de déplacement
         deplacement();
+    }
+    void RendreMouvementPossible()
+    {
+        peutBouger = true;
     }
 }

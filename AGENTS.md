@@ -2,7 +2,7 @@
 - Project name: TowerOfBael
 - Unity version: Unity 2022.3.62f3
 - Active game object:
-  - Name: Default_Tear
-  - Tag: Projectile
+  - Name: Character
+  - Tag: Player
   - Layer: Default
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->
