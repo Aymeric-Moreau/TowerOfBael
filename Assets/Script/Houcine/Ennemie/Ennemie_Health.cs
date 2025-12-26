@@ -38,19 +38,10 @@ public class Ennemie_Health : MonoBehaviour
         // Décrémente la vie de notre ennemie
         Current_Health_Ennemie -= Damage;
 
-        //Color color = gameObject.GetComponent<SpriteRenderer>().color;
+        
+        SpriteRenderer sprite = gameObject.GetComponent<SpriteRenderer>();
 
-        //bool animFinie = false;
-        //float time = 0f;
-
-        //while (true) {
-        //    time = + Time.deltaTime;
-        //    if (time > 1)
-        //    {
-                
-        //    }
-
-        //}
+        StartCoroutine(Cligote( sprite));
 
 
         // Empêche que la vie devienne négative
@@ -65,6 +56,16 @@ public class Ennemie_Health : MonoBehaviour
             Mort_Ennemie();
 
         }
+    }
+
+    IEnumerator Cligote(SpriteRenderer sprite)
+    {
+        Color baseColor = sprite.color;
+        Debug.Log("degat coroutine start");
+        sprite.color = Color.red;
+        yield return new WaitForSeconds(0.15f);
+        sprite.color = baseColor;
+        
     }
 }
 
