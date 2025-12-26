@@ -2271,7 +2271,7 @@ PrefabInstance:
     - target: {fileID: 5939497996932133209, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
       propertyPath: projectilePrefab
       value: 
-      objectReference: {fileID: 6927497743742010253, guid: 5a5c67b97dfa9d245b183684fdc53a47, type: 3}
+      objectReference: {fileID: 2182936657409277892, guid: d97c147eeced01644b27ef0c5987384c, type: 3}
     - target: {fileID: 5939497996932133209, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
       propertyPath: cooldownBrimstone
       value: 2
