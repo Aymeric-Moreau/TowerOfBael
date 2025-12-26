@@ -2258,7 +2258,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5939497996932133209, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
       propertyPath: cooldownNormal
-      value: 0.3
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 5939497996932133209, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
       propertyPath: immobilisation
@@ -2282,11 +2282,11 @@ PrefabInstance:
       objectReference: {fileID: 1067696991}
     - target: {fileID: 6918660733238017584, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
       propertyPath: Current_Health
-      value: 8
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6918660733238017584, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
       propertyPath: Maximum_Health
-      value: 8
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
