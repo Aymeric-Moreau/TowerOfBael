@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+// Ce script gère les boutons du menu principal (Play, Quit)
 public class Main_Menu : MonoBehaviour
 {
     // Fonction reliée au bouton "Play"
     public void PlayGame()
     {
-        // Charge la scène de jeu
+        // Charge la scène de jeu par son nom
         SceneManager.LoadScene("Houcine_Character");
     }
 

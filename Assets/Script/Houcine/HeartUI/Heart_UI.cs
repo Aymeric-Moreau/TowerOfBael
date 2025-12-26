@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI; // nécessaire pour utiliser Image et Sprite
 
+// Ce script gère l'affichage de la vie du joueur sous forme de cœurs
 public class Heart_UI : MonoBehaviour
 {
     public GameObject heartPrefab; // Prefab Image
-    public Sprite heartFull;
-    public Sprite heartHalf;
-    public Sprite heartEmpty;
-    public int hpPerHeart = 2;
+    public Sprite heartFull; // cœur plein
+    public Sprite heartHalf; // cœur à moitié rempli
+    public Sprite heartEmpty; // cœur vide
+    public int hpPerHeart = 2;  // Nombre de points de vie que représente un cœur complet
 
     private GameObject[] hearts; // Tableau qui stocke les références aux cœurs instanciés
 
@@ -32,8 +33,8 @@ public class Heart_UI : MonoBehaviour
         {
             GameObject go = Instantiate(heartPrefab, transform);// Instancie le prefab comme enfant du manager
             RectTransform rt = go.GetComponent<RectTransform>(); // Récupère le RectTransform pour positionner le cœur
-            rt.anchoredPosition = new Vector2(i * 75, 0); // Décale chaque cœur horizontalement pour qu’ils ne se chevauchent pa
-            rt.localScale = Vector3.one; // Assure que l’échelle du cœur est normale
+            rt.anchoredPosition = new Vector2(i * 75, 0); // Décale chaque cœur horizontalement pour qu’ils ne se chevauchent pas
+            rt.localScale = Vector3.one; // Assure que l’échelle du cœur est correcte
             hearts[i] = go;
         }
     }
@@ -48,8 +49,11 @@ public class Heart_UI : MonoBehaviour
         {
             // Calcule combien de points de vie reste pour ce cœur précis
             int heartHP = Mathf.Clamp(currentHP - (i * hpPerHeart), 0, hpPerHeart);
+
+            // Récupère l'Image du cœur
             Image img = hearts[i].GetComponent<Image>();
 
+            // Change le sprite selon les points de vie restants
             if (heartHP >= hpPerHeart)
                 img.sprite = heartFull;
             else if (heartHP > 0)

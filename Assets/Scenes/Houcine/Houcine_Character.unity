@@ -1409,7 +1409,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 250, y: -200}
+  m_AnchoredPosition: {x: 380, y: -143}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1067696991
@@ -1596,8 +1596,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -988, y: -418}
+  m_AnchoredPosition: {x: 0, y: 34}
+  m_SizeDelta: {x: -988, y: -326.0955}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1204618539
 MonoBehaviour:
@@ -2196,6 +2196,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 460025751614188823, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
+      propertyPath: "Invincible_Dur\xE9e"
+      value: 0.15
+      objectReference: {fileID: 0}
     - target: {fileID: 3229485993283230676, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
       propertyPath: m_Name
       value: Character
@@ -2241,12 +2245,36 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5939497996932133209, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
+      propertyPath: damageTear
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5939497996932133209, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
       propertyPath: DashCooldown
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5939497996932133209, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
       propertyPath: DashDistance
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5939497996932133209, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
+      propertyPath: cooldownNormal
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5939497996932133209, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
+      propertyPath: immobilisation
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5939497996932133209, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
+      propertyPath: damageBrimstone
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5939497996932133209, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
+      propertyPath: projectilePrefab
+      value: 
+      objectReference: {fileID: 6927497743742010253, guid: 5a5c67b97dfa9d245b183684fdc53a47, type: 3}
+    - target: {fileID: 5939497996932133209, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
+      propertyPath: cooldownBrimstone
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6918660733238017584, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
       propertyPath: heartUI
@@ -2321,6 +2349,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1383307261}
+    - target: {fileID: 7606722366972847125, guid: d98b29c9734283d4586d7ef376a93dfc, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2373,6 +2405,14 @@ PrefabInstance:
     - target: {fileID: 3588868400154908706, guid: 0a337f7522fd876459ed34af909bea4d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7684169583980001400, guid: 0a337f7522fd876459ed34af909bea4d, type: 3}
+      propertyPath: newProjectilePrefab
+      value: 
+      objectReference: {fileID: 5970950203413173406, guid: 2f7d9b0953cafef44835c1ad068a8c14, type: 3}
+    - target: {fileID: 7684169583980001400, guid: 0a337f7522fd876459ed34af909bea4d, type: 3}
+      propertyPath: NewCooldownProjectile
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 9076599443896786601, guid: 0a337f7522fd876459ed34af909bea4d, type: 3}
       propertyPath: m_Name

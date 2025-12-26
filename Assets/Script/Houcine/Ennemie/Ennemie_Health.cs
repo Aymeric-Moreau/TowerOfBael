@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Ce script gère la vie (HP) d'un ennemi
 public class Ennemie_Health : MonoBehaviour
 {
+    // La vie maximale de l'ennemi, réglable dans l'inspecteur
     [SerializeField]
     private float Maximum_Health_Ennemie;
 
@@ -20,13 +22,14 @@ public class Ennemie_Health : MonoBehaviour
         }
     }
 
+    // Fonction qui détruit l'ennemi (appelée quand la vie atteint 0)
     public void Mort_Ennemie()
     {
         Destroy(this.gameObject);
     }
 
 
-
+    // Fonction qui applique des dégâts à l'ennemi
     public void TakeDamgeEnnemie(float Damage)
     {
         // Si la vie est déjà à 0, on ne fait rien
