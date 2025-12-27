@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3804895640923800021}
   - component: {fileID: 7585099141827237937}
   m_Layer: 0
-  m_Name: Default_Tear
+  m_Name: OLD_TEAR_VERSION
   m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -190,5 +190,23 @@ public class Health_Systeme : MonoBehaviour
         heartUI.UpdateHearts((int)Current_Health);
     }
 
+    public void AddMaxHealth(float amount)
+    {
+        // augmente la vie max
+        Maximum_Health += amount;
+
+        //  on soigne aussi de la même quantité (comme un cœur complet)
+        Current_Health += amount;
+        if (Current_Health > Maximum_Health)
+            Current_Health = Maximum_Health;
+
+        // met à jour l'UI (recrée les coeurs)
+        if (heartUI != null)
+        {
+            heartUI.CreateHearts((int)Maximum_Health);
+            heartUI.UpdateHearts((int)Current_Health);
+            
+        }
+    }
 
 }

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 484095094779968557}
   - component: {fileID: 1608872045489675130}
   m_Layer: 5
-  m_Name: Coeur
+  m_Name: Coeur_ui
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
