@@ -2,7 +2,7 @@
 - Project name: TowerOfBael
 - Unity version: Unity 2022.3.62f3
 - Active game object:
-  - Name: Item_Room
-  - Tag: Untagged
+  - Name: Ennemie_Mannequin (1)
+  - Tag: Ennemie
   - Layer: Default
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->
