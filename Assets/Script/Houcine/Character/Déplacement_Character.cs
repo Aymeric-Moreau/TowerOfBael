@@ -28,13 +28,32 @@ public class Déplacement_Character : MonoBehaviour
     //  Indique si le joueur est vivant ou mort
     public bool estVivant = true;
 
+    private Animator anim;
+    private Vector2 lastDirection = Vector2.down; // Direction par défaut pour l'Animator
 
     // Start is called before the first frame update
     void Start()
     {
         // On récupère le Rigidbody2D attaché au joueur
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>(); // Récupération de l'Animator
+
     }
+
+    // Fonction pour mettre à jour l'Animator
+    void UpdateAnimator(Vector2 moveDirection)
+    {
+        bool isMoving = moveDirection != Vector2.zero;
+        anim.SetBool("IsMoving", isMoving);
+
+        // On garde la dernière direction quand on bouge
+        if (isMoving)
+            lastDirection = moveDirection.normalized;
+
+        anim.SetFloat("Horizontal", lastDirection.x);
+        anim.SetFloat("Vertical", lastDirection.y);
+    }
+
 
     // Fonction pour gérer le déplacement du joueur
     public void deplacement()
@@ -77,6 +96,8 @@ public class Déplacement_Character : MonoBehaviour
 
         // On réinitialise la rotation pour éviter tout spin physique
         rb.angularVelocity = 0f;
+
+        UpdateAnimator(mouvementTotal);
 
     }
 
