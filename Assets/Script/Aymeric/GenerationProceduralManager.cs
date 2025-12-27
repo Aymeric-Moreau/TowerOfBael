@@ -5,6 +5,7 @@ using System.Reflection;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
+using static Collectible;
 //using static UnityEditor.PlayerSettings;
 [Serializable]
 public struct IndexMinMax
@@ -21,21 +22,30 @@ public struct obstacleValue
     public Direction[] directionsNeed;
 }
 
+public struct Statbonus
+{
+    public int value;
+    public ItemType type;
+}
+
 public class GenerationProceduralManager : MonoBehaviour
 {
     
     public Room[,] map = new Room[9,9];
     public Dictionary<IndexGrid, GameObject> DictInstanciateRooms = new Dictionary<IndexGrid, GameObject>();
     public GameObject[] obstacles;
-    
+    public Statbonus[] array;
     public TypeSalle[] typeSalleParIndex;
     public GameObject[] prefabSalle;
     public obstacleValue[] obstacleValues;
+    public IndexMinMax[] zoneSalleBoss;
+
     public float ecartEntreSallX = 50;
     public float ecartEntreSallY = 40;
     public int seed = 0;
     public int nbrSalleEnPlus = 0;
-    public IndexMinMax[] zoneSalleBoss;
+
+    
 
     IndexGrid SpawnCo;
     IndexGrid BossCo;
