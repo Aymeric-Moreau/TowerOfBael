@@ -7,7 +7,7 @@ using UnityEngine;
 public class Tear_Ennemie : MonoBehaviour
 {
     // La vitesse de déplacement du projectile
-    public float vitesse = 10f;
+    [HideInInspector] public float vitesse;
 
     // La direction dans laquelle le projectile va se déplacer
     public Vector2 direction;

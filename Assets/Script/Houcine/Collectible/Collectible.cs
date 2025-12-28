@@ -6,7 +6,7 @@ public class Collectible : MonoBehaviour
     public ItemType itemType;
     public int SoinPV = 1;           // Redonne de la vie
     public float damageBonus = 1f;         // Bonus dégâts (Tear + Brimstone)
-    public float cooldownReduction = 0.1f; // Réduction cooldown larme normale
+    public float cooldownReduction = 0.1f; // Réduction cooldown larme 
     public float speedBonus = 1f;          // Bonus vitesse déplacement
     public int maxHealthIncrease = 1;      // Ajoute un nouveau coeur /demi-coeur supplémentaire
 
