@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
@@ -9,8 +9,13 @@ public class AIEnnemisFuyeur : MonoBehaviour
     public Transform target;
     public float speed = 1f;
     // Start is called before the first frame update
+
+    private Animator anim;
+    private bool IsMovingAnim;
+
     void Start()
     {
+        anim = GetComponent<Animator>();
         
     }
 
@@ -24,9 +29,18 @@ public class AIEnnemisFuyeur : MonoBehaviour
             direction.Normalize();
 
             transform.position -= direction * speed * Time.deltaTime;
-        }
-        
 
-        
+            // L’ennemi bouge → Walk
+            IsMovingAnim = true;
+        }
+        else
+        {
+            // Ennemi trop loin → Idle
+            IsMovingAnim = false;
+        }
+        // On applique au Animator
+        anim.SetBool("IsMoving", IsMovingAnim);
+
+
     }
 }
