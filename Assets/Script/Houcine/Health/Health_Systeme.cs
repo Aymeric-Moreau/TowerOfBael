@@ -66,7 +66,7 @@ public class Health_Systeme : MonoBehaviour
         sprite.color = Color.red;
 
         // Attend 0.15 seconde sans bloquer le jeu
-        yield return new WaitForSeconds(0.15f);
+        yield return new WaitForSeconds(0.25f);
 
         // Restaure la couleur d'origine du sprite
         sprite.color = baseColor;
