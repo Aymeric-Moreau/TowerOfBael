@@ -5,7 +5,8 @@ using System.Reflection;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
-//using static UnityEditor.PlayerSettings;
+using static Collectible;
+
 [Serializable]
 public struct IndexMinMax
 {
@@ -21,23 +22,39 @@ public struct obstacleValue
     public Direction[] directionsNeed;
 }
 
+
+
 public class GenerationProceduralManager : MonoBehaviour
 {
     
     public Room[,] map = new Room[9,9];
+
     public Dictionary<IndexGrid, GameObject> DictInstanciateRooms = new Dictionary<IndexGrid, GameObject>();
+
     public GameObject[] obstacles;
-    
+
     public TypeSalle[] typeSalleParIndex;
+
     public GameObject[] prefabSalle;
+
     public obstacleValue[] obstacleValues;
-    public float ecartEntreSallX = 50;
-    public float ecartEntreSallY = 40;
-    public int seed = 0;
-    public int nbrSalleEnPlus = 0;
+
     public IndexMinMax[] zoneSalleBoss;
 
+    public GameObject wall;
+
+    public float ecartEntreSallX = 50;
+
+    public float ecartEntreSallY = 40;
+
+    public int seed = 0;
+
+    public int nbrSalleEnPlus = 0;
+
+    
+
     IndexGrid SpawnCo;
+
     IndexGrid BossCo;
 
     public GameObject player;
@@ -516,46 +533,13 @@ public class GenerationProceduralManager : MonoBehaviour
             RoomManager RMScript = roomIntstance.GetComponent<RoomManager>();
             SpawnObstacle(type, posRoom, salle, RMScript);
             DictInstanciateRooms.Add(index, roomIntstance);
-            //Instantiate(prefabSalle[Array.IndexOf(typeSalleParIndex, type)],
-            //    new Vector3(index.x * ecartEntreSallX, index.y * ecartEntreSallY, 0),
-            //    Quaternion.identity);
+            
         }
 
 
     }
 
-    //void SpawnObstacle(TypeSalle type , Vector3 posRoom, Room salle, RoomManager scriptPrefab ) {
-    //    if (type == TypeSalle.Combat)
-    //    {
-    //        bool obstacleIsPlacer = false;
-    //        while (!obstacleIsPlacer)
-    //        {
-    //            bool isInvalid = false;
-    //            GameObject[] listeObstacl = RandomizeArray(obstacles);
-    //            GameObject obstacleChoisis = listeObstacl[UnityEngine.Random.Range(0, obstacles.Length)];
-    //            obstacleManager obstacleScript = obstacleChoisis.GetComponent<obstacleManager>();
-    //            foreach (var item in obstacleScript.cheminBloquer)
-    //            {
-    //                if (salle.Voisins.ContainsKey(item))
-    //                {
 
-    //                    isInvalid = true;
-    //                    break;
-    //                }
-    //            }
-    //            if (!isInvalid)
-    //            {
-    //                obstacleIsPlacer = true;
-    //                Instantiate(obstacleChoisis, posRoom, Quaternion.identity);
-    //                GameObject ennemis = Instantiate(obstacleScript.ensenbleDEnnemisPossible[UnityEngine.Random.Range(0, obstacleScript.ensenbleDEnnemisPossible.Length)], posRoom, Quaternion.identity);
-                    
-    //                SetPlayerInAI(ennemis);
-    //                ennemis.SetActive(false);
-    //                scriptPrefab.ennemis = ennemis;
-    //            }
-    //        } 
-    //    }
-    //}
 
     void SpawnObstacle(TypeSalle type, Vector3 posRoom, Room salle, RoomManager scriptPrefab)
     {
@@ -589,17 +573,7 @@ public class GenerationProceduralManager : MonoBehaviour
             {
                 Instantiate(obstacleChoisis, posRoom, Quaternion.identity);
 
-                GameObject ennemis = Instantiate(
-                    obstacleScript.ensenbleDEnnemisPossible[
-                        UnityEngine.Random.Range(0, obstacleScript.ensenbleDEnnemisPossible.Length)
-                    ],
-                    posRoom,
-                    Quaternion.identity
-                );
-
-                SetPlayerInAI(ennemis);
-                ennemis.SetActive(false);
-                scriptPrefab.ennemis = ennemis;
+                SpawnEnnemis(obstacleScript, scriptPrefab, posRoom);
                 return;
             }
         }
@@ -607,6 +581,26 @@ public class GenerationProceduralManager : MonoBehaviour
         Debug.LogWarning("Aucun obstacle valide trouvé pour cette salle");
     }
 
+    void SpawnEnnemis(obstacleManager obstacleScript, RoomManager scriptPrefab, Vector3 posRoom)
+    {
+        GameObject ennemis = Instantiate(obstacleScript.ensenbleDEnnemisPossible[UnityEngine.Random.Range(0, obstacleScript.ensenbleDEnnemisPossible.Length)], posRoom, Quaternion.identity);
+
+        SetPlayerInAI(ennemis);
+        SetRoomOwnerInAi(ennemis, scriptPrefab);
+        ennemis.SetActive(false);
+        scriptPrefab.ennemis = ennemis;
+    }
+    void SetRoomOwnerInAi(GameObject ennemis,RoomManager roomScript)
+    {
+        Ennemie_Health[] ennemie_Health = ennemis.GetComponentsInChildren<Ennemie_Health>();
+        if (ennemie_Health.Length > 0)
+        {
+            foreach (Ennemie_Health ennemi in ennemie_Health)
+            {
+                ennemi.RoomOwner = roomScript;
+            }
+        }
+    }
 
     void SetPlayerInAI(GameObject ennemis)
     {
@@ -683,23 +677,27 @@ public class GenerationProceduralManager : MonoBehaviour
 
     void SetAllValueOfAllPrefabRoom()
     {
+        RoomManager roomM;
         foreach (var item in DictInstanciateRooms)
         {
+            roomM = item.Value.GetComponent<RoomManager>();
             Door[] lesPorte = item.Value.GetComponentsInChildren<Door>();
-            foreach (var porte in lesPorte)
+            for (int i = 0; i < lesPorte.Length; i++)
             {
+                Door porte = lesPorte[i];
                 Room voisin = getVoisin(item.Key, porte.direction);
 
                 if (voisin != null &&
                     DictInstanciateRooms.TryGetValue(voisin.IndexInMap, out GameObject cible))
                 {
                     porte.roomCible = cible;
+                    roomM.wallsDoor[i].SetActive(false);
                 }
                 else
                 {
                     porte.gameObject.SetActive(false);
+                    roomM.wallsDoor[i].SetActive(true);
                 }
-
             }
         }
     }
@@ -730,55 +728,3 @@ public class GenerationProceduralManager : MonoBehaviour
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// renvoie une co aléatoire a partir d'une liste de liste de co 
-//Vector2 GetRandomCoInListRange(List<List<Vector2>> listeCo)
-//{
-//    List<Vector2> fusion = new List<Vector2>();
-
-//    foreach (var subList in listeCo)
-//    { fusion.AddRange(subList); }
-
-
-//    return fusion[UnityEngine.Random.Range(0, fusion.Count)];
-//}
-
-//// renvoie une room aléatoire a partir d'une liste de liste de co 
-//Room GetRandomRoomInListRange(List<List<Vector2>> listeCo)
-//{
-//    List<Vector2> fusion = new List<Vector2>();
-
-//    foreach (var subList in listeCo)
-//    { fusion.AddRange(subList); }
-
-//    Vector2 coAleatoire = fusion[UnityEngine.Random.Range(0, fusion.Count)];
-//    return map[coAleatoire.x , coAleatoire.y];
-//}
