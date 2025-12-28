@@ -186,6 +186,14 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5939497996932133209, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
+      propertyPath: cooldownNormal
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5939497996932133209, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
+      propertyPath: cooldownBrimstone
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -466,10 +474,6 @@ MonoBehaviour:
   obstacleValues:
   - prefab: {fileID: 0}
     directionsNeed: 
-  ecartEntreSallX: 50
-  ecartEntreSallY: 40
-  seed: 0
-  nbrSalleEnPlus: 3
   zoneSalleBoss:
   - minX: 0
     minY: 0
@@ -487,6 +491,12 @@ MonoBehaviour:
     minY: 7
     maxX: 6
     maxY: 8
+  wall: {fileID: 5690464461776438395, guid: 6fc42ac9ef28a0142b8312e7979270f3, type: 3}
+  ecartEntreSallX: 50
+  ecartEntreSallY: 40
+  seed: 0
+  nbrSalleEnPlus: 3
+  player: {fileID: 0}
 --- !u!4 &2134937496
 Transform:
   m_ObjectHideFlags: 0

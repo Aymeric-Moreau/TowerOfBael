@@ -60,6 +60,34 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9026659214868371925, guid: d98b29c9734283d4586d7ef376a93dfc, type: 3}
+      propertyPath: lootsItem.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9026659214868371925, guid: d98b29c9734283d4586d7ef376a93dfc, type: 3}
+      propertyPath: lootsItem.Array.data[0].item
+      value: 
+      objectReference: {fileID: 3795230954692361801, guid: 220165e6400f0554a9c259af2e26f033, type: 3}
+    - target: {fileID: 9026659214868371925, guid: d98b29c9734283d4586d7ef376a93dfc, type: 3}
+      propertyPath: lootsItem.Array.data[1].item
+      value: 
+      objectReference: {fileID: 4486329655007306278, guid: f0f2f01425a53514a8c92757a10ada93, type: 3}
+    - target: {fileID: 9026659214868371925, guid: d98b29c9734283d4586d7ef376a93dfc, type: 3}
+      propertyPath: lootsItem.Array.data[0].itemGO
+      value: 
+      objectReference: {fileID: 3795230954692361801, guid: 220165e6400f0554a9c259af2e26f033, type: 3}
+    - target: {fileID: 9026659214868371925, guid: d98b29c9734283d4586d7ef376a93dfc, type: 3}
+      propertyPath: lootsItem.Array.data[1].itemGO
+      value: 
+      objectReference: {fileID: 4486329655007306278, guid: f0f2f01425a53514a8c92757a10ada93, type: 3}
+    - target: {fileID: 9026659214868371925, guid: d98b29c9734283d4586d7ef376a93dfc, type: 3}
+      propertyPath: lootsItem.Array.data[0].pourcentageChance
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 9026659214868371925, guid: d98b29c9734283d4586d7ef376a93dfc, type: 3}
+      propertyPath: lootsItem.Array.data[1].pourcentageChance
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

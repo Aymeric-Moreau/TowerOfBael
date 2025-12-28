@@ -20,7 +20,7 @@ public class AIEnnemisFuyeur : MonoBehaviour
         if (target == null) return;
         if (target.position.x - transform.position.x < 7 && target.position.y - transform.position.y < 7)
         {
-            Vector3 direction = target.position - transform.position;
+            Vector3 direction = new Vector3(target.position.x - transform.position.x,target.position.y - transform.position.y,transform.position.z);
             direction.Normalize();
 
             transform.position -= direction * speed * Time.deltaTime;

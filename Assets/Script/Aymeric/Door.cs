@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,6 +16,7 @@ public class Door : MonoBehaviour
     public GameObject roomCible;
     public Direction direction;
     public Transform spawnPoint;
+    public GameObject wall;
 
     public static readonly Dictionary<Direction, Direction> directionCible = new Dictionary<Direction, Direction>{
     { Direction.droite, Direction.gauche },
@@ -35,9 +37,21 @@ public class Door : MonoBehaviour
         
     }
 
+    public void desactiveWall()
+    {
+        gameObject.GetComponent<SpriteRenderer>().enabled = true;
+        wall.SetActive(false);
+    }
+
+    public void activeWall()
+    {
+        gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        wall.SetActive(true);
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
+        if (collision.CompareTag("Player") && wall.activeSelf == false)
         {
             Debug.Log("player in porte");
             RoomManager RMScript = roomCible.GetComponent<RoomManager>();
