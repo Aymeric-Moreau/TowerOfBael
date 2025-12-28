@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;  // IMPORTANT pour TextMeshPro
 
 // Ce script gère les boutons du menu principal (Play, Quit)
 public class Main_Menu : MonoBehaviour

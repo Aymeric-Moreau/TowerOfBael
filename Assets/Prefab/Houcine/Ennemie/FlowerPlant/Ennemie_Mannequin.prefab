@@ -162,7 +162,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c42a5fbf25cb4774c93633ddb1a45c89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tearPrefab: {fileID: 6493861620424427351, guid: fc9650b1c15187b49aedac8fad0b858e, type: 3}
+  tearPrefab: {fileID: 7813943983842540146, guid: 4f2987be33becc84aa10a866cbdd32f1, type: 3}
   fireRate: 1.5
   bulletSpeed: 10
   player: {fileID: 0}

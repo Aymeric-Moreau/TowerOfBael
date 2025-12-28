@@ -13,8 +13,25 @@ public class Heart_UI : MonoBehaviour
     public int hpPerHeart = 2;  // Nombre de points de vie que représente un cœur complet
 
     private GameObject[] hearts; // Tableau qui stocke les références aux cœurs instanciés
+    // Référence au panel complet de Game Over (texte + boutons)
+    public GameObject HideUI;
 
     // Crée tous les cœurs selon la vie max
+
+    private void Start()
+    {
+        // On cache le panel au début
+        if (HideUI != null)
+            HideUI.SetActive(true);
+    }
+
+    // Appelée quand le joueur meurt
+    public void ShowGameOver()
+    {
+        // Active le panel Game Over pour l'afficher
+        if (HideUI != null)
+            HideUI.SetActive(false);
+    }
     public void CreateHearts(int maxHP)
     {
         // Si des cœurs ont déjà été créés, on les détruit pour repartir à zéro

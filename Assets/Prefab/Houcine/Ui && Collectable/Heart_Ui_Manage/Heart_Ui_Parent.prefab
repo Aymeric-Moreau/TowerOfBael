@@ -155,3 +155,4 @@ MonoBehaviour:
   heartHalf: {fileID: 21300000, guid: 2843749b82c86114db7d116f16273354, type: 3}
   heartEmpty: {fileID: 21300000, guid: d02cc18e4de7706489fa195738767f07, type: 3}
   hpPerHeart: 2
+  HideUI: {fileID: 7820938076942740334}
