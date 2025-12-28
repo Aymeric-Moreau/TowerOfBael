@@ -28,6 +28,7 @@ public class Déplacement_Character : MonoBehaviour
     //  Indique si le joueur est vivant ou mort
     public bool estVivant = true;
 
+    // Animator pour gérer les animations du joueur
     private Animator anim;
     private Vector2 lastDirection = Vector2.down; // Direction par défaut pour l'Animator
 
@@ -43,13 +44,16 @@ public class Déplacement_Character : MonoBehaviour
     // Fonction pour mettre à jour l'Animator
     void UpdateAnimator(Vector2 moveDirection)
     {
+        // isMoving est vrai si le vecteur de déplacement n'est pas nul
         bool isMoving = moveDirection != Vector2.zero;
+        // On met à jour le booléen IsMoving dans l'Animator
         anim.SetBool("IsMoving", isMoving);
 
-        // On garde la dernière direction quand on bouge
+        // On met à jour lastDirection uniquement si on bouge
         if (isMoving)
             lastDirection = moveDirection.normalized;
 
+        // On met à jour les floats Horizontal et Vertical pour le BlendTree
         anim.SetFloat("Horizontal", lastDirection.x);
         anim.SetFloat("Vertical", lastDirection.y);
     }
@@ -97,6 +101,7 @@ public class Déplacement_Character : MonoBehaviour
         // On réinitialise la rotation pour éviter tout spin physique
         rb.angularVelocity = 0f;
 
+        // Mise à jour de l'Animator avec le vecteur de mouvement
         UpdateAnimator(mouvementTotal);
 
     }
@@ -198,6 +203,7 @@ public class Déplacement_Character : MonoBehaviour
         // Appel de la fonction de déplacement
         deplacement();
     }
+    // Fonction pour permettre à nouveau le mouvement après immobilisation
     void RendreMouvementPossible()
     {
         peutBouger = true;
