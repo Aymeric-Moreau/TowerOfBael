@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 3da6b729157ec2c4aa96633c1afb66d8
+guid: 09663a941d3fd584a8c6ac7f45b9a4cf
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,7 +97,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: flowerPlant_idle_0
+      name: flowerPlant_idle 1_0
       rect:
         serializedVersion: 2
         x: 2
@@ -111,14 +111,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 01367afaf52a0564eaee5b79ecd81f40
-      internalID: -2073301817
+      spriteID: 1ee0c49c962b36f47a4da6a0cb3d5138
+      internalID: 1191519947
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: flowerPlant_idle_1
+      name: flowerPlant_idle 1_1
       rect:
         serializedVersion: 2
         x: 18
@@ -132,14 +132,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7caf2fb72d7d6dc44b1aa7a1dd08b523
-      internalID: 1132219344
+      spriteID: 4e0b743b73ef1d540a723d746091b838
+      internalID: 796307133
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: flowerPlant_idle_2
+      name: flowerPlant_idle 1_2
       rect:
         serializedVersion: 2
         x: 34
@@ -153,8 +153,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7a09ae63e534c6748851253e026f8718
-      internalID: -1136647691
+      spriteID: 50662932130b82c409719f3a4715e406
+      internalID: 819225428
       vertices: []
       indices: 
       edges: []
@@ -170,9 +170,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      flowerPlant_idle_0: -2073301817
-      flowerPlant_idle_1: 1132219344
-      flowerPlant_idle_2: -1136647691
+      flowerPlant_idle 1_0: 1191519947
+      flowerPlant_idle 1_1: 796307133
+      flowerPlant_idle 1_2: 819225428
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

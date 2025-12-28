@@ -15,11 +15,25 @@ public class Tear_Ennemie : MonoBehaviour
     // Dégâts que ce projectile inflige au joueur 
     [SerializeField] private float tear_damage;
 
+
+    void Start()
+    {
+        // Toujours normaliser la direction
+        direction = direction.normalized;
+
+        // Calcule l'angle en fonction de la direction
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+        // Tourne le sprite 
+        transform.rotation = Quaternion.Euler(0f, 0f, angle + 90f);
+    }
+
     void Update()
     {
         // Déplace le projectile dans la direction spécifiée à la vitesse donnée
         transform.position += (Vector3)(direction * vitesse * Time.deltaTime);
     }
+
 
     void OnTriggerEnter2D(Collider2D other)
     {

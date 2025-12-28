@@ -84,6 +84,10 @@ PrefabInstance:
       propertyPath: m_SortingOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7606722366972847125, guid: d98b29c9734283d4586d7ef376a93dfc, type: 3}
+      propertyPath: tearPrefab
+      value: 
+      objectReference: {fileID: 2510538747712688380, guid: e965b5a79f6c7304992b213534644c4a, type: 3}
     - target: {fileID: 7956721774729300652, guid: d98b29c9734283d4586d7ef376a93dfc, type: 3}
       propertyPath: m_Size.x
       value: 0.19533382
