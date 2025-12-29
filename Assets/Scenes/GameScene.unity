@@ -528,7 +528,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 380, y: -143}
+  m_AnchoredPosition: {x: 464, y: -132.9}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &652054846
@@ -1691,8 +1691,6 @@ MonoBehaviour:
   wall: {fileID: 5690464461776438395, guid: 6fc42ac9ef28a0142b8312e7979270f3, type: 3}
   ecartEntreSallX: 50
   ecartEntreSallY: 40
-  seed: 0
-  seedSTR: 
   nbrSalleEnPlus: 3
   player: {fileID: 1997400034}
 --- !u!4 &2134937496
