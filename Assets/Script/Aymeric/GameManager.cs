@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     public string seed = "";
+    public GameObject player;
 
     private void Awake()
     {

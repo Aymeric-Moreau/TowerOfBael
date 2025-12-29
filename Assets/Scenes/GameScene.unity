@@ -579,6 +579,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   seed: 
+  player: {fileID: 8468117328296906198, guid: e9920dbf855ba0d458990a881aa6316e, type: 3}
 --- !u!4 &1095834523
 Transform:
   m_ObjectHideFlags: 0
@@ -890,7 +891,7 @@ Transform:
   m_GameObject: {fileID: 1347256071}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 168.70001, y: 121.00002, z: -28.9}
+  m_LocalPosition: {x: 168, y: 120, z: -28.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
