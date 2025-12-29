@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pool:
   - itemGO: {fileID: 1791208106560515409, guid: 7a61096b07572b447a429684200d3a9d, type: 3}
-    pourcentageChance: 26
+    pourcentageChance: 30
   - itemGO: {fileID: 7813908459849717475, guid: 6c68e30e3c1a1b143ab8501cac94a1d5, type: 3}
-    pourcentageChance: 20
+    pourcentageChance: 10
   - itemGO: {fileID: 1191779988667142130, guid: e882c565a1e9d3c4692c2eb1a2b40428, type: 3}
-    pourcentageChance: 27
+    pourcentageChance: 30
   - itemGO: {fileID: 1508678250889121947, guid: c2fde7a098d2ca4469213a1323809e41, type: 3}
-    pourcentageChance: 27
+    pourcentageChance: 30

@@ -49,7 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemType: 2
   SoinPV: 0
-  damageBonus: 2
+  damageBonus: 1
   cooldownReduction: 0
   speedBonus: 0
   maxHealthIncrease: 0
