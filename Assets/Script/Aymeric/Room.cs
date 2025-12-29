@@ -32,12 +32,15 @@ public class Room
     public Vector2 CoordonerInScene;
 
     bool active;
+
     TypeSalle type;
+
     public bool acceptePlusieurVoisin;
-    public bool VoisinHaut;
-    public bool VoisinBas;
-    public bool VoisinGauche;
-    public bool VoisinDroite;
+    //public bool VoisinHaut;
+    //public bool VoisinBas;
+    //public bool VoisinGauche;
+    //public bool VoisinDroite;
+    // dictionnaire stockant les voisin de la room avec leur direction
     public Dictionary<Direction, Room> Voisins = new();
 
     public Room(bool active, TypeSalle typeSalle, IndexGrid IMap)

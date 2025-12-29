@@ -18,6 +18,7 @@ public class Door : MonoBehaviour
     public Transform spawnPoint;
     public GameObject wall;
 
+    // dictionnaire des direction opposé de chaque direction de porte
     public static readonly Dictionary<Direction, Direction> directionCible = new Dictionary<Direction, Direction>{
     { Direction.droite, Direction.gauche },
     { Direction.gauche, Direction.droite },
@@ -36,19 +37,20 @@ public class Door : MonoBehaviour
     {
         
     }
-
+    // enléve le le mur
     public void desactiveWall()
     {
         gameObject.GetComponent<SpriteRenderer>().enabled = true;
         wall.SetActive(false);
     }
-
+    // active le mur
     public void activeWall()
     {
         gameObject.GetComponent<SpriteRenderer>().enabled = false;
         wall.SetActive(true);
     }
 
+    // quand il vas rentrer dans le trigger sa vas tp le joueur dans la room cible a point de tp qui corespond a la porte de direction opposé a celle pris 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player") && wall.activeSelf == false)
