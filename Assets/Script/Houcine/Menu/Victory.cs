@@ -17,11 +17,13 @@ public class Victory : MonoBehaviour
     }
 
     // Appelée quand le joueur meurt
-    public void ShowGameOver()
+    public void ShowVictory()
     {
         // Active le panel Game Over pour l'afficher
         if (victoireScreen != null)
             victoireScreen.SetActive(true);
+        
+        FindObjectOfType<Heart_UI>().ShowVictory();
     }
 
     // Bouton Restart

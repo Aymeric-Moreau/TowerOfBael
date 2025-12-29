@@ -27,7 +27,7 @@ public class FinDuJeu : MonoBehaviour
             // Vérifie que le script existe
             if (victoire != null)
                 // Affiche l'écran de Game Over
-                victoire.ShowGameOver();
+                victoire.ShowVictory();
 
         }
     }

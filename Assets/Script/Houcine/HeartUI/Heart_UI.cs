@@ -33,6 +33,16 @@ public class Heart_UI : MonoBehaviour
         if (HideUI != null)
             HideUI.SetActive(false);
     }
+
+    //Appelez quand le joueur touche le trophee
+    public void ShowVictory()
+    {
+        // cache les coeurs quand le panel Victory apparait !
+        if (HideUI != null)
+            HideUI.SetActive(false);
+    }
+
+
     public void CreateHearts(int maxHP)
     {
         // Si des cœurs ont déjà été créés, on les détruit pour repartir à zéro

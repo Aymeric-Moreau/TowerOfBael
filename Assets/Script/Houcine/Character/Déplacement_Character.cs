@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 // Ce script gère le déplacement et les tir du personnage joueur
 public class Déplacement_Character : MonoBehaviour
 {
-
     // Vitesse de déplacement du joueur
     public float vitesseDeplacementPersonnage = 10f;
 
@@ -38,6 +38,7 @@ public class Déplacement_Character : MonoBehaviour
         // On récupère le Rigidbody2D attaché au joueur
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>(); // Récupération de l'Animator
+        
 
     }
 
@@ -202,6 +203,10 @@ public class Déplacement_Character : MonoBehaviour
 
         // Appel de la fonction de déplacement
         deplacement();
+
+        //Bouton Reset
+        if (Input.GetKey(KeyCode.R))
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
     // Fonction pour permettre à nouveau le mouvement après immobilisation
     void RendreMouvementPossible()

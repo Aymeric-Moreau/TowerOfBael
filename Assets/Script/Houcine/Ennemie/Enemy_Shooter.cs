@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Ce script gère le tir automatique d'un ennemi vers le joueur
+// Ce script gère le tir automatique d'un ennemi vers le joueur (IA Shooter)
 public class Enemy_Shooter : MonoBehaviour
 {
     public GameObject tearPrefab;     //Prefab du projectile que l'ennemi va tirer
