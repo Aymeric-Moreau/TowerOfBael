@@ -27,29 +27,34 @@ public struct obstacleValue
 
 public class GenerationProceduralManager : MonoBehaviour
 {
-    
+    // array a 2 dimension permettant de stocker la dispositon de l'atage sous forme theorique a l'aide de la classe Room
     public Room[,] map = new Room[9,9];
+
 
     public Dictionary<IndexGrid, GameObject> DictInstanciateRooms = new Dictionary<IndexGrid, GameObject>();
 
+    // stocke tout les obstacle possible a mettre sur le salle
     public GameObject[] obstacles;
 
+    // double array liant un type de salle et un prefab
     public TypeSalle[] typeSalleParIndex;
-
     public GameObject[] prefabSalle;
 
-    public obstacleValue[] obstacleValues;
+    //public obstacleValue[] obstacleValues;
 
+    // array de coordonée délimitant la zonne où peut spawn la salle de boss
     public IndexMinMax[] zoneSalleBoss;
+
 
     public GameObject wall;
 
+    // écart entre le spawn des prefab de salle
     public float ecartEntreSallX = 50;
 
     public float ecartEntreSallY = 40;
 
    
-
+    // salle en plus qui spawneront aprés la constrcution du chemin et du spawn de la salle item
     public int nbrSalleEnPlus = 0;
 
     
@@ -62,20 +67,20 @@ public class GenerationProceduralManager : MonoBehaviour
 
     private static GenerationProceduralManager instance;
 
-    void Awake()
-    {
-        if (instance != null)
-        {
-            Debug.LogError("GenerationProceduralManager dupliqué — destruction");
-            Destroy(gameObject);
-            return;
-        }
-        instance = this;
-    }
+    //void Awake()
+    //{
+    //    if (instance != null)
+    //    {
+    //        Debug.LogError("GenerationProceduralManager dupliqué — destruction");
+    //        Destroy(gameObject);
+    //        return;
+    //    }
+    //    instance = this;
+    //}
 
     void Start()
     {
-        Debug.Log("debut gen proce dural : " + Time.frameCount);
+        // Fil d'éxécution construisant le niveau pas a pas
         initialization();
         placingSpecialRoom();
         placingPathwayRoom();
@@ -83,6 +88,7 @@ public class GenerationProceduralManager : MonoBehaviour
 
     }
 
+    
     void initialization()
     {
         InitializeMapDefault();
@@ -95,6 +101,7 @@ public class GenerationProceduralManager : MonoBehaviour
         
     }
 
+    // place la room spawn et boss
     void placingSpecialRoom()
     {
         SpawnCo = new IndexGrid(4, 4);
@@ -119,28 +126,11 @@ public class GenerationProceduralManager : MonoBehaviour
         BossRoom.SetSalleType(TypeSalle.Boss);
     }
 
+    // place le chemin de room entre boss et spawn ainsi que la salle item (qui doit n'avoir qu'un seule voisin)
     void placingPathwayRoom()
     {
         List<IndexGrid> pathCo = GetCoPathBetweenTwoCoo(SpawnCo, BossCo);
         SetRoomInAllCoList(pathCo);
-
-
-
-        // Debug map
-        for (int i = 0; i < 9; i++)
-        {
-            Debug.Log(
-                "( " + i + ",0 ):" + Format(i, 0) + " . " +
-                "( " + i + ",1 ):" + Format(i, 1) + " . " +
-                "( " + i + ",2 ):" + Format(i, 2) + " . " +
-                "( " + i + ",3 ):" + Format(i, 3) + " . " +
-                "( " + i + ",4 ):" + Format(i, 4) + " . " +
-                "( " + i + ",5 ):" + Format(i, 5) + " . " +
-                "( " + i + ",6 ):" + Format(i, 6) + " . " +
-                "( " + i + ",7 ):" + Format(i, 7) + " . " +
-                "( " + i + ",8 ):" + Format(i, 8)
-            );
-        }
 
         // GetEmptyCoordinatesWithOneNeighbor()
         //Debug.Log(" nombre de case possible pour item = " + GetEmptyRoomWithOneNeighbor().Count);
@@ -176,37 +166,17 @@ public class GenerationProceduralManager : MonoBehaviour
         {
             Debug.LogWarning("Impossible de placer toutes les salles combat");
         }
-
-
-
-
     }
 
+    // Attribue les vlauer néçésaire a chaque room puis instantiate tout les prefab des room
     void instanciationRoomInScene()
     {
-        for (int i = 0; i < 9; i++)
-        {
-            Debug.Log(
-                "( " + i + ",0 ):" + Format(i, 0) + " . " +
-                "( " + i + ",1 ):" + Format(i, 1) + " . " +
-                "( " + i + ",2 ):" + Format(i, 2) + " . " +
-                "( " + i + ",3 ):" + Format(i, 3) + " . " +
-                "( " + i + ",4 ):" + Format(i, 4) + " . " +
-                "( " + i + ",5 ):" + Format(i, 5) + " . " +
-                "( " + i + ",6 ):" + Format(i, 6) + " . " +
-                "( " + i + ",7 ):" + Format(i, 7) + " . " +
-                "( " + i + ",8 ):" + Format(i, 8)
-            );
-        }
+        
         SetAllValueOfAllRoom();
         SpawnAllRoomInScene();
         SetAllValueOfAllPrefabRoom();
     }
 
-    string Format(int x, int y)
-    {
-        return map[x, y].GetSalleType() + " - " + map[x, y].IsActive();
-    }
 
     // Initialise toutes les salles à Vide + inactif
     void InitializeMapDefault()
@@ -220,7 +190,7 @@ public class GenerationProceduralManager : MonoBehaviour
         }
     }
 
-    // Récupère les 8 voisins autour d’une case (si hors limite → null)
+    // Récupère les 8 Room voisins autour d’une case (si hors limite → null)
     Room[] GetAllVoisins(IndexGrid co)
     {
         Room[] result = new Room[8];
@@ -239,7 +209,7 @@ public class GenerationProceduralManager : MonoBehaviour
 
         return result;
     }
-
+    // récupére la room voisin de la coordonée donner en focntion de la direction voulue
     Room getVoisin(IndexGrid co, Direction dir)
     {
         Room result = null;
@@ -299,12 +269,12 @@ public class GenerationProceduralManager : MonoBehaviour
         return result;
     }
 
-    // Récupère les 4 voisins les plus proche autour d’une case (si hors limite → null)
-    /// <summary>
-    /// Récupére les coordoné des 4 voisin dans cette ordre gauche, haut,droite,bas
-    /// </summary>
-    /// <param name="co">Coordoné de la room</param>
-    /// <returns>un array des voisin</returns>
+    
+      /// <summary>
+      /// Récupére les coordoné des 4 voisin dans cette ordre gauche, haut,droite,bas
+     /// </summary>
+     /// <param name="co">Coordoné de la room</param>
+     /// <returns>un array des voisin</returns>
     IndexGrid[] GetAllCloseVoisinsCo(IndexGrid co)
     {
         IndexGrid[] result = new IndexGrid[4];
@@ -372,7 +342,7 @@ public class GenerationProceduralManager : MonoBehaviour
         return result;
     }
 
-
+    // permet de fusionner des liste de IndexGrid en une seule liste
     List<IndexGrid> FusionneListe(List<List<IndexGrid>> listeCo)
     {
         List<IndexGrid> fusion = new List<IndexGrid>();
@@ -383,13 +353,13 @@ public class GenerationProceduralManager : MonoBehaviour
         return fusion;
     }
 
-    // renvoie une room aléatoire a partir d'une liste
+    // renvoie une room aléatoire a partir d'une liste de room
     Room GetRandomRoomInListRange(List<Room> listeRoom)
     {
        
         return listeRoom[UnityEngine.Random.Range(0, listeRoom.Count)];
     }
-    // renvoie une co aléatoire a partir d'une liste
+    // renvoie une room aléatoire a partir d'une liste de co
     Room GetRandomRoomInListRange(List<IndexGrid> listeRoom)
     {
         IndexGrid coAleatoire = listeRoom[UnityEngine.Random.Range(0, listeRoom.Count)];
@@ -397,25 +367,19 @@ public class GenerationProceduralManager : MonoBehaviour
         //return listeRoom[UnityEngine.Random.Range(0, listeRoom.Count)];
     }
 
-    // co min = 4,4 coMax = 8,5
-    // 8,5 - 4,4 = 4,1
-    // 4 +4 = 8
-    // 4+1 = 5
-    // on récupére les case entre 4,4 et 8,4 ensuite entre 8,4 et 8,5
+
+    // on récupére un chemin de coordoné entre 2 co
     List<IndexGrid> GetCoPathBetweenTwoCoo(IndexGrid coMin, IndexGrid coMax)
     {
         List<IndexGrid> result = new List<IndexGrid>();
         int ecartX = coMax.x - coMin.x;
         int ecartY = coMax.y - coMin.y;
 
-        //Debug.Log("comin = " + coMin +  ", comax = " + coMax + ", ecart = " + ecartX + "," + ecartY);
+
 
         List<IndexGrid> lignevertical = GetAllCoBetweenMinMaxCo(coMin, new IndexGrid(coMin.x + ecartX , coMin.y));
         List<IndexGrid> ligneveHorizontal = GetAllCoBetweenMinMaxCo(new IndexGrid(coMin.x + ecartX, coMin.y), new IndexGrid(coMin.x + ecartX , coMin.y + ecartY));
 
-        //Debug.Log("lignevertical = " + lignevertical.IsUnityNull() + "," + lignevertical.Count);
-        //Debug.Log("ligneveHorizontal = " + ligneveHorizontal.IsUnityNull() + "," + ligneveHorizontal.Count);
-        //Debug.Log("ligneveHorizontal = " + ligneveHorizontal.ToString());
 
         result.AddRange(lignevertical);
         result.AddRange(ligneveHorizontal);
@@ -423,8 +387,8 @@ public class GenerationProceduralManager : MonoBehaviour
 
         return result;
     }
-    // IEnumerable<IndexGrid> permet d'accpeter a la fois les listn et les array ainsi que d'autre...
-    void SetRoomInAllCoList(IEnumerable<IndexGrid> coList, TypeSalle type = TypeSalle.Combat)
+    // active les room de chaque coordonée en leur donnant leur type
+    void SetRoomInAllCoList(IEnumerable<IndexGrid> coList, TypeSalle type = TypeSalle.Combat) // IEnumerable<IndexGrid> permet d'accpeter a la fois les listn et les array ainsi que d'autre...
     {
         foreach (var item in coList)
         {
@@ -445,7 +409,7 @@ public class GenerationProceduralManager : MonoBehaviour
         }
     }
 
-
+    // permet de récupérer toute les salle active avec un filtre de type possible
     List<Room> GetAllActivedRoom(params TypeSalle[] typeFiltre) // le parametre TypeFiltre n'est pas obligatoire
     {
         List < Room > result = new List<Room>();
@@ -463,6 +427,7 @@ public class GenerationProceduralManager : MonoBehaviour
 
         return result;
     }
+    // récupére toute les salle inactive qui ont une salle active comme voisin
     List<Room> GetEmptyRoomWithNeighbor(params TypeSalle[] typeFiltre)
     {
         List<Room> allRooms = GetAllActivedRoom(typeFiltre);
@@ -489,7 +454,7 @@ public class GenerationProceduralManager : MonoBehaviour
         return allInactiveNeighbor;
     }
 
-
+    // récupére les salle inactive qui ont qu'un seule voisin
     List<Room> GetEmptyRoomWithOneNeighbor()
     {
 
@@ -519,12 +484,12 @@ public class GenerationProceduralManager : MonoBehaviour
         return result;
     }
 
+    // permet de spawn le prefab dde la room corespondante dans la scéne 
     void SpawnRoom(IndexGrid index, Room salle ,TypeSalle type)
     {
         if (DictInstanciateRooms.ContainsKey(index))
             return;
-        Debug.Log(type.ToString());
-        Debug.Log(Array.IndexOf(typeSalleParIndex, type));
+        
         if (type != TypeSalle.Bloquer)
         {
             GameObject room = prefabSalle[Array.IndexOf(typeSalleParIndex, type)];
@@ -542,7 +507,7 @@ public class GenerationProceduralManager : MonoBehaviour
     }
 
 
-
+    // spawn un obstacle aléatoire au coordonée de la salle en focntion de quelle porte ouverte la salle ai
     void SpawnObstacle(TypeSalle type, Vector3 posRoom, Room salle, RoomManager scriptPrefab)
     {
        
@@ -550,9 +515,10 @@ public class GenerationProceduralManager : MonoBehaviour
         if (type != TypeSalle.Combat)
             return;
 
+        //évite les boucle infinie
         const int MAX_TRY = 20;
         int tryCount = 0;
-
+        
         while (tryCount < MAX_TRY)
         {
             tryCount++;
@@ -562,6 +528,7 @@ public class GenerationProceduralManager : MonoBehaviour
             GameObject obstacleChoisis = obstacles[UnityEngine.Random.Range(0, obstacles.Length)];
             obstacleManager obstacleScript = obstacleChoisis.GetComponent<obstacleManager>();
 
+            // vérifie si la salle a des chemin ouvert qui serais bloquer par l'obstacle
             foreach (var item in obstacleScript.cheminBloquer)
             {
                 if (salle.Voisins.ContainsKey(item))
@@ -582,7 +549,7 @@ public class GenerationProceduralManager : MonoBehaviour
 
         Debug.LogWarning("Aucun obstacle valide trouvé pour cette salle");
     }
-
+    // spawn un ennemis aléatoire piocher dans les enseble d'ennemis rentrer dans l'ensenble d'obstacle
     void SpawnEnnemis(obstacleManager obstacleScript, RoomManager scriptPrefab, Vector3 posRoom)
     {
         GameObject ennemis = Instantiate(obstacleScript.ensenbleDEnnemisPossible[UnityEngine.Random.Range(0, obstacleScript.ensenbleDEnnemisPossible.Length)], posRoom, Quaternion.identity);
@@ -592,6 +559,7 @@ public class GenerationProceduralManager : MonoBehaviour
         ennemis.SetActive(false);
         scriptPrefab.ennemis = ennemis;
     }
+    // donne a l'ia le script de la salle ou il spawn
     void SetRoomOwnerInAi(GameObject ennemis,RoomManager roomScript)
     {
         Ennemie_Health[] ennemie_Health = ennemis.GetComponentsInChildren<Ennemie_Health>();
@@ -603,7 +571,7 @@ public class GenerationProceduralManager : MonoBehaviour
             }
         }
     }
-
+    // donne a chaque script de l'ennemis le player ( pas opti il faudrait que je repense gloabalement cette partie)
     void SetPlayerInAI(GameObject ennemis)
     {
         // Shooter
@@ -637,7 +605,7 @@ public class GenerationProceduralManager : MonoBehaviour
             }
         }
     }
-
+    // parcours tout les room active pour placer leur prefab
     void SpawnAllRoomInScene()
     {
         
@@ -649,6 +617,7 @@ public class GenerationProceduralManager : MonoBehaviour
         
     }
 
+    // enregistre les voisin de chaque room dans leur script
     void SetAllValueOfAllRoom()
     {
         Debug.Log("set valeur port");
@@ -677,6 +646,7 @@ public class GenerationProceduralManager : MonoBehaviour
         }
     }
 
+    // parcours chaque prefab pour activer ou non leur porte en fonction de leur voisin
     void SetAllValueOfAllPrefabRoom()
     {
         RoomManager roomM;
@@ -704,6 +674,7 @@ public class GenerationProceduralManager : MonoBehaviour
         }
     }
 
+    // mélange un array
     public GameObject[] RandomizeArray(GameObject[] array)
     {
         GameObject[] result = new GameObject[array.Length];
