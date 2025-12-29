@@ -5,6 +5,7 @@ using System.Reflection;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Windows;
 using static Collectible;
 
 [Serializable]
@@ -47,7 +48,7 @@ public class GenerationProceduralManager : MonoBehaviour
 
     public float ecartEntreSallY = 40;
 
-    public int seed = 0;
+   
 
     public int nbrSalleEnPlus = 0;
 
@@ -86,9 +87,10 @@ public class GenerationProceduralManager : MonoBehaviour
     {
         InitializeMapDefault();
         //UnityEngine.Random.state = new UnityEngine.Random.State();
-        if (seed !=0)
+        if (GameManager.instance.seed != "" && !GameManager.instance.seed.IsUnityNull())
         {
-            UnityEngine.Random.InitState(seed);
+            UnityEngine.Random.InitState(GameManager.instance.seed.GetHashCode());
+            //int hash = seedSTR.GetHashCode();
         }
         
     }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI; // nécessaire pour utiliser Image et Sprite
 
@@ -59,6 +60,7 @@ public class Heart_UI : MonoBehaviour
     // Met à jour les cœurs selon la vie actuelle
     public void UpdateHearts(int currentHP)
     {
+        Debug.Log("valeur de heart : " + hearts.IsUnityNull());
         if (hearts == null) return; // Si aucun cœur n’a été créé, on ne fait rien
 
         // Parcourt tous les cœurs et met à jour leur sprite
@@ -66,7 +68,7 @@ public class Heart_UI : MonoBehaviour
         {
             // Calcule combien de points de vie reste pour ce cœur précis
             int heartHP = Mathf.Clamp(currentHP - (i * hpPerHeart), 0, hpPerHeart);
-
+            Debug.Log(heartHP + " point de vie qui rest au jouur il a été tocuhe");
             // Récupère l'Image du cœur
             Image img = hearts[i].GetComponent<Image>();
 

@@ -153,7 +153,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   vitesseDeplacementPersonnage: 10
   projectilePrefab: {fileID: 2182936657409277892, guid: d97c147eeced01644b27ef0c5987384c, type: 3}
-  cooldownNormal: 1
+  cooldownNormal: 0.5
   cooldownBrimstone: 2
   damageTear: 2
   damageBrimstone: 5

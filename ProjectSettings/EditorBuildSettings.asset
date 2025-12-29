@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Houcine/Houcine_Character.unity
     guid: 2a92edac0639d5a4b86ea01de7d49854
+  - enabled: 1
+    path: Assets/Scenes/GameScene.unity
+    guid: c9aea878ad2ff964fae0fb44bfd874b1
   m_configObjects: {}

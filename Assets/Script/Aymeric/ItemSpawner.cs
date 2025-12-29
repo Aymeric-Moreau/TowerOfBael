@@ -12,7 +12,7 @@ public class ItemSpawner : MonoBehaviour
          
 
         GameObject item = items.GetRandomLoot();
-        Instantiate(item,transform.position,Quaternion.identity);
+        Instantiate(item,transform.position + new Vector3(0,0,-1),Quaternion.identity);
 
     }
 

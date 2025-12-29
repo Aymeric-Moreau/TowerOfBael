@@ -49,7 +49,8 @@ public class Collectible : MonoBehaviour
 
                         // On met à jour le cooldown du Brimstone directement sur le joueur
                         // Ce cooldown sera utilisé quand le joueur tirera avec le nouveau projectile
-                        player.cooldownBrimstone = NewCooldownProjectile;
+                        Debug.Log("vooldown : "+ NewCooldownProjectile+". " + player.cooldownBrimstone);
+                        //player.cooldownBrimstone = NewCooldownProjectile;
                     }
                     break;
 

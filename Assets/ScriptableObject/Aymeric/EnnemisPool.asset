@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pool:
   - itemGO: {fileID: 4486329655007306278, guid: f0f2f01425a53514a8c92757a10ada93, type: 3}
-    pourcentageChance: 70
+    pourcentageChance: 15
   - itemGO: {fileID: 3795230954692361801, guid: 220165e6400f0554a9c259af2e26f033, type: 3}
-    pourcentageChance: 30
+    pourcentageChance: 7
