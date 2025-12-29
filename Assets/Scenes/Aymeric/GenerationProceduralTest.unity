@@ -229,6 +229,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   seed: 
+  player: {fileID: 0}
 --- !u!4 &1116865019
 Transform:
   m_ObjectHideFlags: 0
