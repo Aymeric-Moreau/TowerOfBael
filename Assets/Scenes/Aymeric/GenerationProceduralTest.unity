@@ -186,6 +186,14 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5939497996932133209, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
+      propertyPath: cooldownNormal
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5939497996932133209, guid: 34becf9cee1fe044a8b2847a83f04fc7, type: 3}
+      propertyPath: cooldownBrimstone
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -454,8 +462,8 @@ MonoBehaviour:
   - {fileID: 8057167990335211398, guid: 6ce0b8d2a3fe2c848abd7ffd41ee0826, type: 3}
   - {fileID: 8394659249190886618, guid: 77956b3cbe959624a9940d20c4a26878, type: 3}
   - {fileID: 7071768726608461597, guid: 4f93b96bd663b774d9cc379d59e380cf, type: 3}
-  - {fileID: 8266235101415493676, guid: 42d395ee09fde8a4a8964e256cf24736, type: 3}
-  - {fileID: 6828342856089488408, guid: baaa7c6a7b67f05468484e6dead2ebe2, type: 3}
+  - {fileID: 4150403332292240362, guid: 59a054b5bc7f6d44db875b3613d710a4, type: 3}
+  - {fileID: 8394659249190886618, guid: 77956b3cbe959624a9940d20c4a26878, type: 3}
   typeSalleParIndex: 0400000001000000020000000300000005000000
   prefabSalle:
   - {fileID: 684056651384381653, guid: 33759a3ef5cbda6499affb9a8f37bae0, type: 3}
@@ -463,10 +471,9 @@ MonoBehaviour:
   - {fileID: 3312078516326493622, guid: 30fb89390491dab409077be65e401a13, type: 3}
   - {fileID: 305043730926302545, guid: 39a1ad2289613994eb630d3d2513fd9d, type: 3}
   - {fileID: 4227268296291503627, guid: f7888e7a3c15ef5458b3b319ae3d21f2, type: 3}
-  ecartEntreSallX: 50
-  ecartEntreSallY: 40
-  seed: 0
-  nbrSalleEnPlus: 3
+  obstacleValues:
+  - prefab: {fileID: 0}
+    directionsNeed: 
   zoneSalleBoss:
   - minX: 0
     minY: 0
@@ -484,6 +491,12 @@ MonoBehaviour:
     minY: 7
     maxX: 6
     maxY: 8
+  wall: {fileID: 5690464461776438395, guid: 6fc42ac9ef28a0142b8312e7979270f3, type: 3}
+  ecartEntreSallX: 50
+  ecartEntreSallY: 40
+  seed: 0
+  nbrSalleEnPlus: 3
+  player: {fileID: 0}
 --- !u!4 &2134937496
 Transform:
   m_ObjectHideFlags: 0

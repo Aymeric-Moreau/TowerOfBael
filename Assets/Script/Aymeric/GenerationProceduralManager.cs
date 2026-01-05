@@ -5,7 +5,8 @@ using System.Reflection;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
-//using static UnityEditor.PlayerSettings;
+using static Collectible;
+
 [Serializable]
 public struct IndexMinMax
 {
@@ -14,28 +15,66 @@ public struct IndexMinMax
     public int maxX;
     public int maxY;
 }
+[Serializable]
+public struct obstacleValue
+{
+    public GameObject prefab;
+    public Direction[] directionsNeed;
+}
+
+
 
 public class GenerationProceduralManager : MonoBehaviour
 {
     
     public Room[,] map = new Room[9,9];
+
     public Dictionary<IndexGrid, GameObject> DictInstanciateRooms = new Dictionary<IndexGrid, GameObject>();
+
     public GameObject[] obstacles;
-    
+
     public TypeSalle[] typeSalleParIndex;
+
     public GameObject[] prefabSalle;
-    public float ecartEntreSallX = 50;
-    public float ecartEntreSallY = 40;
-    public int seed = 0;
-    public int nbrSalleEnPlus = 0;
+
+    public obstacleValue[] obstacleValues;
+
     public IndexMinMax[] zoneSalleBoss;
 
+    public GameObject wall;
+
+    public float ecartEntreSallX = 50;
+
+    public float ecartEntreSallY = 40;
+
+    public int seed = 0;
+
+    public int nbrSalleEnPlus = 0;
+
+    
+
     IndexGrid SpawnCo;
+
     IndexGrid BossCo;
 
+    public GameObject player;
+
+    private static GenerationProceduralManager instance;
+
+    void Awake()
+    {
+        if (instance != null)
+        {
+            Debug.LogError("GenerationProceduralManager dupliqué — destruction");
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
+    }
 
     void Start()
     {
+        Debug.Log("debut gen proce dural : " + Time.frameCount);
         initialization();
         placingSpecialRoom();
         placingPathwayRoom();
@@ -115,8 +154,13 @@ public class GenerationProceduralManager : MonoBehaviour
         // ajout de salle combat a des position aléatoire tout en étant a coté d'une salle déja existante
         List<Room> neighbors = GetEmptyRoomWithNeighbor(TypeSalle.Combat, TypeSalle.Spawn);
         int nbrSallecreer = 0;
-        while (nbrSallecreer != nbrSalleEnPlus)
+        int maxTry = 50;
+        int tryCount = 0;
+
+        while (nbrSallecreer < nbrSalleEnPlus && tryCount < maxTry)
         {
+            tryCount++;
+
             Room combatRoom = GetRandomRoomInListRange(neighbors);
             if (!combatRoom.IsActive())
             {
@@ -124,8 +168,11 @@ public class GenerationProceduralManager : MonoBehaviour
                 combatRoom.SetSalleType(TypeSalle.Combat);
                 nbrSallecreer++;
             }
+        }
 
-            
+        if (tryCount >= maxTry)
+        {
+            Debug.LogWarning("Impossible de placer toutes les salles combat");
         }
 
 
@@ -374,19 +421,28 @@ public class GenerationProceduralManager : MonoBehaviour
 
         return result;
     }
-
-    void SetRoomInAllCoList(IEnumerable<IndexGrid> coList, TypeSalle type = TypeSalle.Combat) // IEnumerable<IndexGrid> permet d'accpeter a la fois les listn et les array ainsi que d'autre...
+    // IEnumerable<IndexGrid> permet d'accpeter a la fois les listn et les array ainsi que d'autre...
+    void SetRoomInAllCoList(IEnumerable<IndexGrid> coList, TypeSalle type = TypeSalle.Combat)
     {
         foreach (var item in coList)
         {
-            if(!map[item.x, item.y].IsActive())
+            // Sécurité : hors grille
+            if (item.x < 0 || item.y < 0 || item.x >= map.GetLength(0) || item.y >= map.GetLength(1))
             {
-                map[item.x, item.y].SetActive(true);
-                map[item.x, item.y].SetSalleType(type);
+                Debug.LogWarning($"Coordonnée hors grille ignorée : {item.x}, {item.y}");
+                continue;
             }
-            
+
+            Room room = map[item.x, item.y];
+
+            if (!room.IsActive())
+            {
+                room.SetActive(true);
+                room.SetSalleType(type);
+            }
         }
     }
+
 
     List<Room> GetAllActivedRoom(params TypeSalle[] typeFiltre) // le parametre TypeFiltre n'est pas obligatoire
     {
@@ -463,6 +519,8 @@ public class GenerationProceduralManager : MonoBehaviour
 
     void SpawnRoom(IndexGrid index, Room salle ,TypeSalle type)
     {
+        if (DictInstanciateRooms.ContainsKey(index))
+            return;
         Debug.Log(type.ToString());
         Debug.Log(Array.IndexOf(typeSalleParIndex, type));
         if (type != TypeSalle.Bloquer)
@@ -472,21 +530,109 @@ public class GenerationProceduralManager : MonoBehaviour
 
             Vector3 posRoom = new Vector3(index.x * room.transform.localScale.x * 1.4f, index.y * room.transform.localScale.y * 1.5f, 0);
             GameObject roomIntstance = Instantiate(room, posRoom, Quaternion.identity);
-
-            SpawnObstacle(type, posRoom);
+            RoomManager RMScript = roomIntstance.GetComponent<RoomManager>();
+            SpawnObstacle(type, posRoom, salle, RMScript);
             DictInstanciateRooms.Add(index, roomIntstance);
-            //Instantiate(prefabSalle[Array.IndexOf(typeSalleParIndex, type)],
-            //    new Vector3(index.x * ecartEntreSallX, index.y * ecartEntreSallY, 0),
-            //    Quaternion.identity);
+            
         }
 
 
     }
 
-    void SpawnObstacle(TypeSalle type , Vector3 posRoom) {
-        if (type == TypeSalle.Combat)
+
+
+    void SpawnObstacle(TypeSalle type, Vector3 posRoom, Room salle, RoomManager scriptPrefab)
+    {
+       
+
+        if (type != TypeSalle.Combat)
+            return;
+
+        const int MAX_TRY = 20;
+        int tryCount = 0;
+
+        while (tryCount < MAX_TRY)
         {
-            Instantiate(obstacles[UnityEngine.Random.Range(0, obstacles.Length)], posRoom, Quaternion.identity);
+            tryCount++;
+
+            bool isInvalid = false;
+
+            GameObject obstacleChoisis = obstacles[UnityEngine.Random.Range(0, obstacles.Length)];
+            obstacleManager obstacleScript = obstacleChoisis.GetComponent<obstacleManager>();
+
+            foreach (var item in obstacleScript.cheminBloquer)
+            {
+                if (salle.Voisins.ContainsKey(item))
+                {
+                    isInvalid = true;
+                    break;
+                }
+            }
+
+            if (!isInvalid)
+            {
+                Instantiate(obstacleChoisis, posRoom, Quaternion.identity);
+
+                SpawnEnnemis(obstacleScript, scriptPrefab, posRoom);
+                return;
+            }
+        }
+
+        Debug.LogWarning("Aucun obstacle valide trouvé pour cette salle");
+    }
+
+    void SpawnEnnemis(obstacleManager obstacleScript, RoomManager scriptPrefab, Vector3 posRoom)
+    {
+        GameObject ennemis = Instantiate(obstacleScript.ensenbleDEnnemisPossible[UnityEngine.Random.Range(0, obstacleScript.ensenbleDEnnemisPossible.Length)], posRoom, Quaternion.identity);
+
+        SetPlayerInAI(ennemis);
+        SetRoomOwnerInAi(ennemis, scriptPrefab);
+        ennemis.SetActive(false);
+        scriptPrefab.ennemis = ennemis;
+    }
+    void SetRoomOwnerInAi(GameObject ennemis,RoomManager roomScript)
+    {
+        Ennemie_Health[] ennemie_Health = ennemis.GetComponentsInChildren<Ennemie_Health>();
+        if (ennemie_Health.Length > 0)
+        {
+            foreach (Ennemie_Health ennemi in ennemie_Health)
+            {
+                ennemi.RoomOwner = roomScript;
+            }
+        }
+    }
+
+    void SetPlayerInAI(GameObject ennemis)
+    {
+        // Shooter
+        Enemy_Shooter[] shooters = ennemis.GetComponentsInChildren<Enemy_Shooter>();
+        if (shooters.Length > 0)
+        {
+            foreach (Enemy_Shooter shooter in shooters)
+            {
+                //shooter.player = player.transform;
+                shooter.player = GameObject.FindWithTag("Player").transform;
+            }
+        }
+
+        // Fuyard
+        AIEnnemisFuyeur[] fuyards = ennemis.GetComponentsInChildren<AIEnnemisFuyeur>();
+        if (fuyards.Length > 0)
+        {
+            foreach (AIEnnemisFuyeur fuyard in fuyards)
+            {
+                fuyard.target = GameObject.FindWithTag("Player").transform;
+            }
+        }
+
+        // Suiveur
+        AIEnnemisSuiveur[] suiveurs = ennemis.GetComponentsInChildren<AIEnnemisSuiveur>();
+        if (suiveurs.Length > 0)
+        {
+            foreach (AIEnnemisSuiveur suiveur in suiveurs)
+            {
+                suiveur.target = GameObject.FindWithTag("Player").transform;
+            }
         }
     }
 
@@ -495,93 +641,90 @@ public class GenerationProceduralManager : MonoBehaviour
         
         foreach (var item in GetAllActivedRoom())
         {
+            
             SpawnRoom(item.IndexInMap,item,item.GetSalleType());
         }
-        SetAllValueOfAllPrefabRoom();
+        
     }
 
     void SetAllValueOfAllRoom()
     {
+        Debug.Log("set valeur port");
        List<Room> lesRooms = GetAllActivedRoom();
         foreach (var item in lesRooms)
         {
             foreach (Direction i in Enum.GetValues(typeof(Direction)))
             {
-                item.SetNeighbor(i, getVoisin(item.IndexInMap, i));
+                //Debug.Log("for each set valeur port");
+                //item.SetNeighbor(i, getVoisin(item.IndexInMap, i));
+
+                Room voisin = getVoisin(item.IndexInMap, i);
+
+                if (voisin != null && voisin.IsActive())
+                {
+                    item.SetNeighbor(i, voisin);
+                }
+            }
+            if (item.GetSalleType() == TypeSalle.Boss)
+            {
+                foreach (var item1 in item.Voisins)
+                {
+                    Debug.Log("boss vosiin  = " +item1.Key);
+                }
             }
         }
     }
 
     void SetAllValueOfAllPrefabRoom()
     {
+        RoomManager roomM;
         foreach (var item in DictInstanciateRooms)
         {
+            roomM = item.Value.GetComponent<RoomManager>();
             Door[] lesPorte = item.Value.GetComponentsInChildren<Door>();
-            foreach (var porte in lesPorte)
+            for (int i = 0; i < lesPorte.Length; i++)
             {
-                if (DictInstanciateRooms.TryGetValue(getVoisin(item.Key, porte.direction).IndexInMap, out GameObject cible)) // ages.TryGetValue("Alice", out int age)
+                Door porte = lesPorte[i];
+                Room voisin = getVoisin(item.Key, porte.direction);
+
+                if (voisin != null &&
+                    DictInstanciateRooms.TryGetValue(voisin.IndexInMap, out GameObject cible))
                 {
-                    porte.roomCible = cible;// getVoisin(item.key, porte.direction).IndexInMap
+                    porte.roomCible = cible;
+                    roomM.wallsDoor[i].SetActive(false);
                 }
                 else
                 {
                     porte.gameObject.SetActive(false);
+                    roomM.wallsDoor[i].SetActive(true);
                 }
-
             }
         }
     }
 
+    public GameObject[] RandomizeArray(GameObject[] array)
+    {
+        GameObject[] result = new GameObject[array.Length];
+        
+        List<int> arrayOfIndex = new List<int>();
+        int indexChoisis;
+        for (int i = 0; i < array.Length; i++)
+        {
+            arrayOfIndex.Add(i);
+        }
+
+        for (int i = 0; i < array.Length ; i++)
+        {
+            
+            indexChoisis = arrayOfIndex[UnityEngine.Random.Range(0, arrayOfIndex.Count)];
+            //Debug.Log("array fo index : " + i + " . " );
+            result[i] = array[indexChoisis];
+            arrayOfIndex.RemoveAt(arrayOfIndex.IndexOf(indexChoisis));
+        }
+
+        return result;
+
+
+    }
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// renvoie une co aléatoire a partir d'une liste de liste de co 
-//Vector2 GetRandomCoInListRange(List<List<Vector2>> listeCo)
-//{
-//    List<Vector2> fusion = new List<Vector2>();
-
-//    foreach (var subList in listeCo)
-//    { fusion.AddRange(subList); }
-
-
-//    return fusion[UnityEngine.Random.Range(0, fusion.Count)];
-//}
-
-//// renvoie une room aléatoire a partir d'une liste de liste de co 
-//Room GetRandomRoomInListRange(List<List<Vector2>> listeCo)
-//{
-//    List<Vector2> fusion = new List<Vector2>();
-
-//    foreach (var subList in listeCo)
-//    { fusion.AddRange(subList); }
-
-//    Vector2 coAleatoire = fusion[UnityEngine.Random.Range(0, fusion.Count)];
-//    return map[coAleatoire.x , coAleatoire.y];
-//}

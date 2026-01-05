@@ -8,4 +8,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Settings/Scenes/URP2DSceneTemplate.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/Houcine/Main_Men_Game.unity
+    guid: 029cf481484ad91438b9ad3b6557369b
+  - enabled: 1
+    path: Assets/Scenes/Houcine/Houcine_Character.unity
+    guid: 2a92edac0639d5a4b86ea01de7d49854
   m_configObjects: {}
