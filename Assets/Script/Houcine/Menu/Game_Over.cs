@@ -22,6 +22,7 @@ public class Game_Over : MonoBehaviour
         // Active le panel Game Over pour l'afficher
         if (gameOverScreen != null)
             gameOverScreen.SetActive(true);
+        FindObjectOfType<Heart_UI>().ShowGameOver();
     }
 
     // Bouton Restart
