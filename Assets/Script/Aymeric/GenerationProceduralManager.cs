@@ -23,6 +23,12 @@ public struct obstacleValue
     public Direction[] directionsNeed;
 }
 
+//*
+// Classe s'occupant de la génération du dungeon 
+//
+//
+//*/
+
 
 
 public class GenerationProceduralManager : MonoBehaviour
