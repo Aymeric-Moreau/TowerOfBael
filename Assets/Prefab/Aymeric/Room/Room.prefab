@@ -914,6 +914,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3298036753706433722}
     m_Modifications:
+    - target: {fileID: 2197452004635560908, guid: 3c8db1e523df58046a1d7979bffe8a50, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2564786597112872849, guid: 3c8db1e523df58046a1d7979bffe8a50, type: 3}
       propertyPath: m_Name
       value: Porte
