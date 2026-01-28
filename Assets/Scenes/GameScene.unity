@@ -618,15 +618,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3833050387575261287, guid: e9920dbf855ba0d458990a881aa6316e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 168.70001
+      value: 168
       objectReference: {fileID: 0}
     - target: {fileID: 3833050387575261287, guid: e9920dbf855ba0d458990a881aa6316e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 121.00002
+      value: 120
       objectReference: {fileID: 0}
     - target: {fileID: 3833050387575261287, guid: e9920dbf855ba0d458990a881aa6316e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -25.4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3833050387575261287, guid: e9920dbf855ba0d458990a881aa6316e, type: 3}
       propertyPath: m_LocalRotation.w
@@ -822,7 +822,7 @@ MonoBehaviour:
   typeSalleParIndex: 0400000001000000020000000300000005000000
   prefabSalle:
   - {fileID: 684056651384381653, guid: 33759a3ef5cbda6499affb9a8f37bae0, type: 3}
-  - {fileID: 9061636687148239355, guid: b28070b903aa34b41a34bf2c540f1bcc, type: 3}
+  - {fileID: 8249400093554863679, guid: 636778f2d12339b43a3ffbd11d934f8c, type: 3}
   - {fileID: 3312078516326493622, guid: 30fb89390491dab409077be65e401a13, type: 3}
   - {fileID: 305043730926302545, guid: 39a1ad2289613994eb630d3d2513fd9d, type: 3}
   - {fileID: 4227268296291503627, guid: f7888e7a3c15ef5458b3b319ae3d21f2, type: 3}
@@ -844,8 +844,8 @@ MonoBehaviour:
     maxX: 6
     maxY: 8
   wall: {fileID: 5690464461776438395, guid: 6fc42ac9ef28a0142b8312e7979270f3, type: 3}
-  ecartEntreSallX: 50
-  ecartEntreSallY: 40
+  ecartEntreSallX: 100
+  ecartEntreSallY: 80
   nbrSalleEnPlus: 3
   player: {fileID: 1997400034}
 --- !u!4 &2134937496
