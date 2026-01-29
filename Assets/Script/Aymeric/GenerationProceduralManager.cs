@@ -502,7 +502,8 @@ public class GenerationProceduralManager : MonoBehaviour
 
 
             //Vector3 posRoom = new Vector3(index.x * room.transform.localScale.x +20 * 1.4f, index.y * room.transform.localScale.y +30 * 1.5f, 0);
-            Vector3 posRoom = new Vector3(index.x * (room.transform.localScale.x +20) * 1.4f, index.y * (room.transform.localScale.y +30) * 1.5f, 0);
+            //Vector3 posRoom = new Vector3(index.x * (room.transform.localScale.x +20) * 1.4f, index.y * (room.transform.localScale.y +30) * 1.5f, 0);
+            Vector3 posRoom = new Vector3(index.x * ecartEntreSallX, index.y * ecartEntreSallY, 0);
             Debug.Log("type : "+type.ToString() + "position " + posRoom + " index" + index.x+ "." + index.y + "room scal calcule" + room.transform.localScale.x  * 1.4f);
             GameObject roomIntstance = Instantiate(room, posRoom, Quaternion.identity);
             RoomManager RMScript = roomIntstance.GetComponent<RoomManager>();

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 [System.Serializable]
 public enum Direction
@@ -53,17 +54,29 @@ public class Door : MonoBehaviour
     // quand il vas rentrer dans le trigger sa vas tp le joueur dans la room cible a point de tp qui corespond a la porte de direction opposé a celle pris 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") && wall.activeSelf == false)
+        if (collision.CompareTag("Player") && wall.activeSelf == false && !collision.IsUnityNull())
         {
             Debug.Log("player in porte");
             RoomManager RMScript = roomCible.GetComponent<RoomManager>();
             directionCible.TryGetValue(direction, out Direction dirCible);
             
             Camera.main.transform.position = roomCible.transform.position + new Vector3(0,0,-20);
+            try
+            {
+                Vector3 v = RMScript.GetDoor(dirCible).spawnPoint.position;
+            }
+            catch (Exception e)
+            {
+                print("error : " + e.Message);
+            }
             collision.gameObject.transform.position = RMScript.GetDoor(dirCible).spawnPoint.position;
             RMScript.ennemis.SetActive(true);
             //collision.transform.position;
             //collision.transform.position;
+        }
+        else
+        {
+            Debug.Log("collision invalid");
         }
     }
 }
